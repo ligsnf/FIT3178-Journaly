@@ -11,16 +11,27 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var databaseController: DatabaseProtocol?
+    var loginNavigationController: UINavigationController?
     var tabBarController: UITabBarController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // initialise firebase controller
         databaseController = FirebaseController()
+        
+        // initialise navigation controllers
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let loginNavigationController = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
+                  fatalError("Could not instantiate loginNavigationController")
+        }
+        self.loginNavigationController = loginNavigationController
         guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? UITabBarController else {
                   fatalError("Could not instantiate TabBarController")
         }
         self.tabBarController = tabBarController
+        
+        // launch success
         return true
     }
 

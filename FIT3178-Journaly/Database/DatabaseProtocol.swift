@@ -26,6 +26,8 @@ protocol DatabaseListener: AnyObject {
 }
 
 protocol DatabaseProtocol: AnyObject {
+    var userSnap: DocumentSnapshot? {get}
+    
     func cleanup()
     
     func signInUser(email: String, password: String, completion: @escaping (AuthDataResult?, Error?) -> Void)

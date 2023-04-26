@@ -8,16 +8,17 @@
 import Firebase
 import FirebaseFirestoreSwift
 
-class FirebaseController: NSObject, DatabaseProtocol {
+class FirebaseController: NSObject, DatabaseProtocol {  
     
     // MARK: - properties
     var listeners = MulticastDelegate<DatabaseListener>()
     
     // firebase references
     var authController: Auth
+    var authStateHandle: AuthStateDidChangeListenerHandle?
     var database: Firestore
     var currentUser: FirebaseAuth.User?
-    var userRef: DocumentReference?
+    var userSnap: DocumentSnapshot?
     
     // MARK: - methods
     
@@ -28,10 +29,30 @@ class FirebaseController: NSObject, DatabaseProtocol {
         database = Firestore.firestore()
         
         super.init()
+        
+        authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] (auth, user) in
+            guard let self = self else { return }
+            
+            if user != nil {
+                // user is signed in
+                self.currentUser = user
+                
+                let userRef = self.database.collection("users").document(user!.uid)
+                userRef.getDocument { (document, error) in
+                    if let document = document, document.exists {
+                        self.userSnap = document
+//                        print("Document data: \(document)")
+                    } else {
+                        print("Document does not exist")
+                    }
+                }
+            }
+        }
     }
     
     func cleanup() {
-        
+        // remove listener when view controller is about to disappear
+        Auth.auth().removeStateDidChangeListener(authStateHandle!)
     }
     
     // authentication
@@ -91,7 +112,6 @@ class FirebaseController: NSObject, DatabaseProtocol {
             if let error = error {
                 completion(error)
             } else {
-                self.userRef = userRef
                 completion(nil)
             }
         }
