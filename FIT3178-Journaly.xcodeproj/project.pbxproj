@@ -12,9 +12,12 @@
 		E8191B2729F8FF8D00C32930 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B2629F8FF8D00C32930 /* HomeViewController.swift */; };
 		E8191B2929F8FFC500C32930 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B2829F8FFC500C32930 /* AccountViewController.swift */; };
 		E8191B2B29F9000E00C32930 /* DayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B2A29F9000E00C32930 /* DayViewController.swift */; };
+		E8191B2F29F90DC300C32930 /* FirebaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B2E29F90DC300C32930 /* FirebaseController.swift */; };
+		E8191B3129F90DE900C32930 /* DatabaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3029F90DE900C32930 /* DatabaseProtocol.swift */; };
+		E8191B3329F90E3300C32930 /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3229F90E3300C32930 /* MulticastDelegate.swift */; };
+		E8191B3529F9120400C32930 /* UIViewController+displayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */; };
 		E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */; };
 		E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */; };
-		E8EE5A5529F64743001C9AA0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5429F64743001C9AA0 /* ViewController.swift */; };
 		E8EE5A5829F64743001C9AA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8EE5A5629F64743001C9AA0 /* Main.storyboard */; };
 		E8EE5A5A29F64745001C9AA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8EE5A5929F64745001C9AA0 /* Assets.xcassets */; };
 		E8EE5A5D29F64745001C9AA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8EE5A5B29F64745001C9AA0 /* LaunchScreen.storyboard */; };
@@ -31,10 +34,13 @@
 		E8191B2629F8FF8D00C32930 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		E8191B2829F8FFC500C32930 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		E8191B2A29F9000E00C32930 /* DayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewController.swift; sourceTree = "<group>"; };
+		E8191B2E29F90DC300C32930 /* FirebaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseController.swift; sourceTree = "<group>"; };
+		E8191B3029F90DE900C32930 /* DatabaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseProtocol.swift; sourceTree = "<group>"; };
+		E8191B3229F90E3300C32930 /* MulticastDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
+		E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+displayMessage.swift"; sourceTree = "<group>"; };
 		E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIT3178-Journaly.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		E8EE5A5429F64743001C9AA0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E8EE5A5729F64743001C9AA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E8EE5A5929F64745001C9AA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E8EE5A5C29F64745001C9AA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -57,6 +63,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E8191B2C29F90CBB00C32930 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				E8191B3229F90E3300C32930 /* MulticastDelegate.swift */,
+				E8191B3029F90DE900C32930 /* DatabaseProtocol.swift */,
+				E8191B2E29F90DC300C32930 /* FirebaseController.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		E8191B2D29F90CD000C32930 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DataModel;
+			sourceTree = "<group>";
+		};
 		E8EE5A4429F64743001C9AA0 = {
 			isa = PBXGroup;
 			children = (
@@ -76,14 +99,16 @@
 		E8EE5A4F29F64743001C9AA0 /* FIT3178-Journaly */ = {
 			isa = PBXGroup;
 			children = (
-				E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */,
-				E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */,
-				E8EE5A5429F64743001C9AA0 /* ViewController.swift */,
 				E8EE5A6D29F64FEC001C9AA0 /* GoogleService-Info.plist */,
-				E8EE5A5629F64743001C9AA0 /* Main.storyboard */,
+				E8EE5A5E29F64745001C9AA0 /* Info.plist */,
 				E8EE5A5929F64745001C9AA0 /* Assets.xcassets */,
 				E8EE5A5B29F64745001C9AA0 /* LaunchScreen.storyboard */,
-				E8EE5A5E29F64745001C9AA0 /* Info.plist */,
+				E8EE5A5629F64743001C9AA0 /* Main.storyboard */,
+				E8191B2D29F90CD000C32930 /* DataModel */,
+				E8191B2C29F90CBB00C32930 /* Database */,
+				E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */,
+				E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */,
+				E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */,
 				E8191B2229F8F5AB00C32930 /* SignInViewController.swift */,
 				E8191B2429F8F5B600C32930 /* SignUpViewController.swift */,
 				E8191B2629F8FF8D00C32930 /* HomeViewController.swift */,
@@ -174,14 +199,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8191B2F29F90DC300C32930 /* FirebaseController.swift in Sources */,
 				E8191B2329F8F5AB00C32930 /* SignInViewController.swift in Sources */,
-				E8EE5A5529F64743001C9AA0 /* ViewController.swift in Sources */,
+				E8191B3529F9120400C32930 /* UIViewController+displayMessage.swift in Sources */,
 				E8191B2929F8FFC500C32930 /* AccountViewController.swift in Sources */,
 				E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */,
 				E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */,
 				E8191B2529F8F5B600C32930 /* SignUpViewController.swift in Sources */,
 				E8191B2729F8FF8D00C32930 /* HomeViewController.swift in Sources */,
+				E8191B3329F90E3300C32930 /* MulticastDelegate.swift in Sources */,
 				E8191B2B29F9000E00C32930 /* DayViewController.swift in Sources */,
+				E8191B3129F90DE900C32930 /* DatabaseProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

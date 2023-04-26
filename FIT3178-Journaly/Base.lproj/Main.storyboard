@@ -16,8 +16,54 @@
                     <view key="view" contentMode="scaleToFill" id="zIo-hO-KVr">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="s5r-qT-07n">
+                                <rect key="frame" x="50" y="144" width="293" height="118.66666666666669"/>
+                                <color key="tintColor" systemColor="labelColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="ZRb-oc-CQl"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tt4-Nw-MpW">
+                                <rect key="frame" x="50" y="293" width="293" height="24"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IkQ-8J-aZP">
+                                <rect key="frame" x="50" y="332" width="293" height="19.333333333333314"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i3d-ae-Msu">
+                                <rect key="frame" x="50" y="575" width="293" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="iSO-1M-Ub1"/>
+                                </constraints>
+                                <color key="tintColor" systemColor="systemOrangeColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="LOGOUT">
+                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="17"/>
+                                </buttonConfiguration>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="wNj-RC-gT3"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="IkQ-8J-aZP" firstAttribute="top" secondItem="Tt4-Nw-MpW" secondAttribute="bottom" constant="15" id="1X0-Yp-F7L"/>
+                            <constraint firstItem="IkQ-8J-aZP" firstAttribute="leading" secondItem="wNj-RC-gT3" secondAttribute="leading" constant="50" id="3VV-XA-UAW"/>
+                            <constraint firstItem="s5r-qT-07n" firstAttribute="top" secondItem="wNj-RC-gT3" secondAttribute="top" constant="40" id="AO1-cU-Ye6"/>
+                            <constraint firstItem="wNj-RC-gT3" firstAttribute="trailing" secondItem="s5r-qT-07n" secondAttribute="trailing" constant="50" id="XnB-OU-QIp"/>
+                            <constraint firstItem="i3d-ae-Msu" firstAttribute="leading" secondItem="wNj-RC-gT3" secondAttribute="leading" constant="50" id="ZPe-jD-X6D"/>
+                            <constraint firstItem="wNj-RC-gT3" firstAttribute="trailing" secondItem="IkQ-8J-aZP" secondAttribute="trailing" constant="50" id="ZUx-8k-EeJ"/>
+                            <constraint firstItem="Tt4-Nw-MpW" firstAttribute="top" secondItem="s5r-qT-07n" secondAttribute="bottom" constant="30" id="aIk-aU-48g"/>
+                            <constraint firstItem="wNj-RC-gT3" firstAttribute="bottom" secondItem="i3d-ae-Msu" secondAttribute="bottom" constant="150" id="bOJ-AG-CzG"/>
+                            <constraint firstItem="wNj-RC-gT3" firstAttribute="trailing" secondItem="i3d-ae-Msu" secondAttribute="trailing" constant="50" id="hMN-uc-H7A"/>
+                            <constraint firstItem="Tt4-Nw-MpW" firstAttribute="leading" secondItem="wNj-RC-gT3" secondAttribute="leading" constant="50" id="jpU-Ds-Kgw"/>
+                            <constraint firstItem="wNj-RC-gT3" firstAttribute="trailing" secondItem="Tt4-Nw-MpW" secondAttribute="trailing" constant="50" id="jws-GF-W7B"/>
+                            <constraint firstItem="s5r-qT-07n" firstAttribute="leading" secondItem="wNj-RC-gT3" secondAttribute="leading" constant="50" id="pg8-YN-Da6"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Account" id="XW1-jK-d3G"/>
                 </viewController>
@@ -218,6 +264,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="Ysy-Wu-Dvh"/>
                     <connections>
+                        <outlet property="emailTextField" destination="clM-Uc-et0" id="fjm-5Q-78D"/>
+                        <outlet property="passwordTextField" destination="1hd-qI-MvH" id="5lV-4g-hgE"/>
                         <segue destination="WTl-d1-o4I" kind="show" identifier="showSignUp" animates="NO" id="oLV-nf-2z7"/>
                     </connections>
                 </viewController>
@@ -377,6 +425,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="Gci-q7-2eV"/>
                     <connections>
+                        <outlet property="confirmPasswordTextField" destination="Xsl-Af-od1" id="3AV-cz-hQ5"/>
+                        <outlet property="emailTextField" destination="Jaf-T3-tRK" id="N81-oo-ZOf"/>
+                        <outlet property="nameTextField" destination="w06-TV-ZdU" id="Tlx-6n-oj1"/>
+                        <outlet property="passwordTextField" destination="BlO-cL-mNg" id="GCP-x5-q6c"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="showSignIn" animates="NO" id="3ed-Bb-tC5"/>
                     </connections>
                 </viewController>
@@ -463,17 +515,24 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="oLV-nf-2z7"/>
         <segue reference="3ed-Bb-tC5"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="calendar" catalog="system" width="128" height="107"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="person.circle" catalog="system" width="128" height="123"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
