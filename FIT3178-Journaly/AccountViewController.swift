@@ -45,9 +45,7 @@ class AccountViewController: UIViewController {
         // databaseController setup
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
-        // set large nav title
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
+
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -25,8 +25,6 @@ class DayViewController: UICollectionViewController {
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
 
     /*

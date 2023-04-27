@@ -59,7 +59,7 @@ class SignUpViewController: UIViewController {
     
     // navigate to sign in page
     @IBAction func signInButtonTapped(_ sender: Any) {
-        performSegue(withIdentifier: "showSignIn", sender: nil)
+        navigationController?.popViewController(animated: false)
     }
     
     // MARK: - View

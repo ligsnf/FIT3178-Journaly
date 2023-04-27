@@ -23,13 +23,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // initialise navigation controllers
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let loginNavigationController = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
-                  fatalError("Could not instantiate loginNavigationController")
+            fatalError("Could not instantiate loginNavigationController")
         }
         self.loginNavigationController = loginNavigationController
         guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? UITabBarController else {
-                  fatalError("Could not instantiate TabBarController")
+            fatalError("Could not instantiate TabBarController")
         }
         self.tabBarController = tabBarController
+        
+        // style navigation bar appearance
+        let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.prefersLargeTitles = true
         
         // launch success
         return true
