@@ -11,7 +11,36 @@ private let reuseIdentifier = "Cell"
 
 class DayViewController: UICollectionViewController {
     
+    // MARK: - Properties
+    var date: Date = Date()
+    var dateString: String?
+    
     // MARK: - Methods
+    func updateTitle() {
+        self.navigationItem.title = formatDate(date)
+    }
+    
+    func formatDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        let components = calendar.dateComponents([.day], from: date, to: Date())
+        
+        // set date string for firestore id
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateString = dateFormatter.string(from: date)
+        
+        // set navigation bar title
+        if calendar.isDateInToday(date) {
+            return "Today"
+        }
+        if let daysDifference = components.day, daysDifference > 0 && daysDifference <= 7 {
+            dateFormatter.dateFormat = "EEEE, d MMMM"
+            return dateFormatter.string(from: date)
+        } else {
+            dateFormatter.dateFormat = "d MMMM, yyyy"
+            return dateFormatter.string(from: date)
+        }
+    }
     
 
     // MARK: - View
@@ -25,6 +54,7 @@ class DayViewController: UICollectionViewController {
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+        updateTitle()
     }
 
     /*

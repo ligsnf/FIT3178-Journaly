@@ -85,20 +85,39 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nh6-G5-7aP">
-                                <rect key="frame" x="170" y="559" width="54" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Day"/>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="inline" translatesAutoresizingMaskIntoConstraints="NO" id="oBe-Sy-1Mh">
+                                <rect key="frame" x="20" y="167" width="353" height="330"/>
                                 <connections>
-                                    <action selector="dayButtonTapped:" destination="zqf-xf-ZJC" eventType="touchUpInside" id="vnh-3G-HxB"/>
+                                    <action selector="datePickerValueChanged:" destination="zqf-xf-ZJC" eventType="valueChanged" id="QzJ-Ny-pwY"/>
+                                </connections>
+                            </datePicker>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z5T-5z-FyH">
+                                <rect key="frame" x="273" y="103" width="100" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="WTA-2c-ky5"/>
+                                    <constraint firstAttribute="height" constant="44" id="ffO-UQ-Xsi"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="TODAY"/>
+                                <connections>
+                                    <action selector="todayButtonTapped:" destination="zqf-xf-ZJC" eventType="touchUpInside" id="IXD-rx-Hh5"/>
                                 </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="AMM-IN-fb6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="oBe-Sy-1Mh" firstAttribute="leading" secondItem="AMM-IN-fb6" secondAttribute="leading" constant="20" id="A83-q5-hca"/>
+                            <constraint firstItem="oBe-Sy-1Mh" firstAttribute="trailing" secondItem="AMM-IN-fb6" secondAttribute="trailing" constant="-20" id="JD1-Dc-yZq"/>
+                            <constraint firstItem="AMM-IN-fb6" firstAttribute="trailing" secondItem="z5T-5z-FyH" secondAttribute="trailing" constant="20" id="XXY-Gc-gs2"/>
+                            <constraint firstItem="z5T-5z-FyH" firstAttribute="top" secondItem="AMM-IN-fb6" secondAttribute="top" id="dSE-za-iEZ"/>
+                            <constraint firstItem="oBe-Sy-1Mh" firstAttribute="top" secondItem="z5T-5z-FyH" secondAttribute="bottom" constant="20" id="g4C-BQ-U0L"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="aF6-yM-W9A"/>
+                    <connections>
+                        <outlet property="datePicker" destination="oBe-Sy-1Mh" id="Jq6-Zx-dlg"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W8h-Md-fZ2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -126,7 +145,7 @@
         <!--Day-->
         <scene sceneID="eiO-ed-O7z">
             <objects>
-                <collectionViewController id="fLj-7J-U6Y" customClass="DayViewController" customModule="FIT3178_Journaly" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="dayView" id="fLj-7J-U6Y" customClass="DayViewController" customModule="FIT3178_Journaly" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="AeY-qY-2r4">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
