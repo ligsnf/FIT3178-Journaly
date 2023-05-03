@@ -31,7 +31,6 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         Memory(title: "Noon", description: "I napped.", date: Date()),
         Memory(title: "Night", description: "I slept.", date: Date()),
     ]
-
     
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var memoriesCollectionView: UICollectionView!
