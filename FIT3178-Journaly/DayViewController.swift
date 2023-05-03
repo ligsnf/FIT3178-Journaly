@@ -10,11 +10,28 @@ import MapKit
 
 private let reuseIdentifier = "memoryCell"
 
+struct Memory {
+    let title: String
+    let description: String
+    let date: Date
+}
+
 class DayViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
     // MARK: - Properties
     var date: Date = Date()
     var dateString: String?
+    var memories: [Memory] = [
+        Memory(title: "The Great Coffee Disaster", description: "I thought I could save time by brewing coffee with my hair dryer. Big mistake. My kitchen is now a coffee-scented sauna. Time to take a break and visit a coffee shop.", date: Date()),
+        Memory(title: "Tuna Salad Surprise", description: "I tried to make a healthy tuna salad for lunch, but I accidentally grabbed a can of cat food instead. It smelled awful, but I figured it couldn't be that bad. I was wrong. Note to self: label the cans.", date: Date()),
+        Memory(title: "My Cat's Fashion Show", description: "My cat has been walking around with a piece of string tied around her neck like it's a necklace. I tried to take it off, but she wouldn't let me. Now she's strutting around like she's on the catwalk. Who knew cats had a sense of fashion?", date: Date()),
+        Memory(title: "The Great Laundry Fiasco", description: "I accidentally mixed a red sock with my whites in the laundry. Now everything is pink. I guess I'll have to wear pink shirts and underwear for a while. At least it's a new fashion statement.", date: Date()),
+        Memory(title: "The Talking Plant", description: "I swear my plant talked to me today. It said, 'Water me, or I'll die.' I'm not sure if I'm losing my mind or if my plant is just really needy. Either way, I need to start talking to more humans.", date: Date()),
+        Memory(title: "Morning", description: "I woke up.", date: Date()),
+        Memory(title: "Noon", description: "I napped.", date: Date()),
+        Memory(title: "Night", description: "I slept.", date: Date()),
+    ]
+
     
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var memoriesCollectionView: UICollectionView!
@@ -70,9 +87,10 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
         
         // Configure collection view
-        memoriesCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         memoriesCollectionView.delegate = self
         memoriesCollectionView.dataSource = self
+        
+        
         
         // Update title and view
         segmentedControlValueChanged()
@@ -102,14 +120,14 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return memories.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MemoryCell
     
         // Configure the cell
-    
+        cell.configure(memory: memories[indexPath.row])
         return cell
     }
     
