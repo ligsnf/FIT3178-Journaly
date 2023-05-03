@@ -6,14 +6,20 @@
 //
 
 import UIKit
+import MapKit
 
-private let reuseIdentifier = "Cell"
+private let reuseIdentifier = "memoryCell"
 
-class DayViewController: UICollectionViewController {
+class DayViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
     // MARK: - Properties
     var date: Date = Date()
     var dateString: String?
+    
+    @IBOutlet var segmentedControl: UISegmentedControl!
+    @IBOutlet var memoriesCollectionView: UICollectionView!
+    @IBOutlet var memoriesMapView: MKMapView!
+    @IBOutlet var addMemoryButton: UIButton!
     
     // MARK: - Methods
     func updateTitle() {
@@ -42,19 +48,43 @@ class DayViewController: UICollectionViewController {
         }
     }
     
-
+    @IBAction func addMemoryButtonTapped(_ sender: Any) {
+    }
+    
+    @objc func segmentedControlValueChanged() {
+        let selectedIndex = segmentedControl.selectedSegmentIndex
+        memoriesCollectionView.isHidden = selectedIndex != 0
+        memoriesMapView.isHidden = selectedIndex == 0
+    }
+    
     // MARK: - View
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
+        
         // Do any additional setup after loading the view.
+        
+        // Configure segmented control
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+        
+        // Configure collection view
+        memoriesCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        memoriesCollectionView.delegate = self
+        memoriesCollectionView.dataSource = self
+        
+        // Update title and view
+        segmentedControlValueChanged()
         updateTitle()
+        
+        // Set the button's tint colour and shadow
+        addMemoryButton.tintColor = UIColor.systemGray5
+        addMemoryButton.layer.shadowColor = UIColor.black.cgColor
+        addMemoryButton.layer.shadowOffset = CGSize(width: 1, height: 1)
+        addMemoryButton.layer.shadowRadius = 3
+        addMemoryButton.layer.shadowOpacity = 0.3
+        
     }
 
     /*
@@ -67,26 +97,22 @@ class DayViewController: UICollectionViewController {
     }
     */
 
+    
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
         return 0
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
     
         // Configure the cell
     
         return cell
     }
+    
 
     // MARK: UICollectionViewDelegate
 
