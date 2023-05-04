@@ -16,6 +16,7 @@
 		E8191B3129F90DE900C32930 /* DatabaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3029F90DE900C32930 /* DatabaseProtocol.swift */; };
 		E8191B3329F90E3300C32930 /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3229F90E3300C32930 /* MulticastDelegate.swift */; };
 		E8191B3529F9120400C32930 /* UIViewController+displayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */; };
+		E83072F12A022DA100C3936C /* MemoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F02A022DA100C3936C /* MemoryCell.swift */; };
 		E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */; };
 		E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */; };
 		E8EE5A5829F64743001C9AA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8EE5A5629F64743001C9AA0 /* Main.storyboard */; };
@@ -38,6 +39,7 @@
 		E8191B3029F90DE900C32930 /* DatabaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseProtocol.swift; sourceTree = "<group>"; };
 		E8191B3229F90E3300C32930 /* MulticastDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
 		E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+displayMessage.swift"; sourceTree = "<group>"; };
+		E83072F02A022DA100C3936C /* MemoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCell.swift; sourceTree = "<group>"; };
 		E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIT3178-Journaly.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				E8191B2629F8FF8D00C32930 /* HomeViewController.swift */,
 				E8191B2A29F9000E00C32930 /* DayViewController.swift */,
 				E8191B2829F8FFC500C32930 /* AccountViewController.swift */,
+				E83072F02A022DA100C3936C /* MemoryCell.swift */,
 			);
 			path = "FIT3178-Journaly";
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				E8191B2329F8F5AB00C32930 /* SignInViewController.swift in Sources */,
 				E8191B3529F9120400C32930 /* UIViewController+displayMessage.swift in Sources */,
 				E8191B2929F8FFC500C32930 /* AccountViewController.swift in Sources */,
+				E83072F12A022DA100C3936C /* MemoryCell.swift in Sources */,
 				E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */,
 				E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */,
 				E8191B2529F8F5B600C32930 /* SignUpViewController.swift in Sources */,

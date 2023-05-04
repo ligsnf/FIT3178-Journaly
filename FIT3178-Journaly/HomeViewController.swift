@@ -9,9 +9,35 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    // MARK: - Properties
+    @IBOutlet var datePicker: UIDatePicker!
+    
+    
     // MARK: - Methods
-    @IBAction func dayButtonTapped(_ sender: Any) {
-        if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
+    @IBAction func todayButtonTapped(_ sender: Any) {
+        let today = Date()
+        datePicker.date = today
+        segueToDayView(today)
+    }
+    
+    @IBAction func datePickerValueChanged(_ sender: Any) {
+        let selectedDate = datePicker.date
+        let currentDate = Date()
+        
+        if selectedDate >= currentDate {
+            displayMessage(title: "Error", message: "Cannot select a future date.")
+            return
+        }
+        
+        segueToDayView(selectedDate)
+    }
+    
+    func segueToDayView(_ date: Date) {
+        if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController,
+           let navigationController = tabBarController.viewControllers?[1] as? UINavigationController,
+           let dayViewController = navigationController.viewControllers.first as? DayViewController {
+            dayViewController.date = date
+            dayViewController.updateTitle()
             tabBarController.selectedIndex = 1
         }
     }
@@ -20,8 +46,9 @@ class HomeViewController: UIViewController {
     // MARK: - View
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
+
     }
     
 
