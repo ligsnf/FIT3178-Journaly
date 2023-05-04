@@ -188,6 +188,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
     func setupMemoriesListener() {
         // Remove the previous listener if it exists
         memoriesListenerRegistration?.remove()
+        memories.removeAll() // Clear the memories array
 
         if let daysRef = daysRef {
             memoriesRef = daysRef.document(formatDate(currentDate)).collection("memories")
@@ -234,8 +235,6 @@ class FirebaseController: NSObject, DatabaseProtocol {
     }
     
     func parseMemoriesSnapshot(snapshot: QuerySnapshot) {
-        memories.removeAll() // Clear the memories array
-        
         snapshot.documentChanges.forEach { (change) in
             var parsedMemory: Memory?
             do {
