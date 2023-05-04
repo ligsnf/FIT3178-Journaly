@@ -24,11 +24,14 @@ class MemoryCell: UICollectionViewCell {
     
     func configure(memory: Memory) {
         titleLabel.text = memory.title
-        descriptionLabel.text = memory.description
+        descriptionLabel.text = memory.content
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
-        timeLabel.text = dateFormatter.string(from: memory.date)
+        
+        if let memoryDate = memory.datetime {
+            timeLabel.text = dateFormatter.string(from: memoryDate)
+        }
     }
     
     

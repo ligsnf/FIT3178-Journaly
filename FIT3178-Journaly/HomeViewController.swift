@@ -10,6 +10,8 @@ import UIKit
 class HomeViewController: UIViewController {
     
     // MARK: - Properties
+    weak var databaseController: DatabaseProtocol?
+    
     @IBOutlet var datePicker: UIDatePicker!
     
     
@@ -36,7 +38,8 @@ class HomeViewController: UIViewController {
         if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController,
            let navigationController = tabBarController.viewControllers?[1] as? UINavigationController,
            let dayViewController = navigationController.viewControllers.first as? DayViewController {
-            dayViewController.date = date
+            databaseController?.setDate(date)
+            databaseController?.setupMemoriesListener()
             dayViewController.updateTitle()
             tabBarController.selectedIndex = 1
         }
@@ -48,6 +51,10 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+        // databaseController setup
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        databaseController = appDelegate?.databaseController
 
     }
     

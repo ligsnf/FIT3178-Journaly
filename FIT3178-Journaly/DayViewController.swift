@@ -10,27 +10,14 @@ import MapKit
 
 private let reuseIdentifier = "memoryCell"
 
-struct Memory {
-    let title: String
-    let description: String
-    let date: Date
-}
-
-class DayViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class DayViewController: UIViewController, DatabaseListener, UICollectionViewDelegate, UICollectionViewDataSource {
     
     // MARK: - Properties
-    var date: Date = Date()
-    var dateString: String?
-    var memories: [Memory] = [
-        Memory(title: "The Great Coffee Disaster", description: "I thought I could save time by brewing coffee with my hair dryer. Big mistake. My kitchen is now a coffee-scented sauna. Time to take a break and visit a coffee shop.", date: Date()),
-        Memory(title: "Tuna Salad Surprise", description: "I tried to make a healthy tuna salad for lunch, but I accidentally grabbed a can of cat food instead. It smelled awful, but I figured it couldn't be that bad. I was wrong. Note to self: label the cans.", date: Date()),
-        Memory(title: "My Cat's Fashion Show", description: "My cat has been walking around with a piece of string tied around her neck like it's a necklace. I tried to take it off, but she wouldn't let me. Now she's strutting around like she's on the catwalk. Who knew cats had a sense of fashion?", date: Date()),
-        Memory(title: "The Great Laundry Fiasco", description: "I accidentally mixed a red sock with my whites in the laundry. Now everything is pink. I guess I'll have to wear pink shirts and underwear for a while. At least it's a new fashion statement.", date: Date()),
-        Memory(title: "The Talking Plant", description: "I swear my plant talked to me today. It said, 'Water me, or I'll die.' I'm not sure if I'm losing my mind or if my plant is just really needy. Either way, I need to start talking to more humans.", date: Date()),
-        Memory(title: "Morning", description: "I woke up.", date: Date()),
-        Memory(title: "Noon", description: "I napped.", date: Date()),
-        Memory(title: "Night", description: "I slept.", date: Date()),
-    ]
+    var listenerType = ListenerType.memories
+    weak var databaseController: DatabaseProtocol?
+    
+//    var date: Date = Date()
+    var memories: [Memory] = []
     
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var memoriesCollectionView: UICollectionView!
@@ -39,7 +26,9 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
     
     // MARK: - Methods
     func updateTitle() {
-        self.navigationItem.title = formatDate(date)
+        if let currentDate = databaseController?.getDate() {
+            self.navigationItem.title = formatDate(currentDate)
+        }
     }
     
     func formatDate(_ date: Date) -> String {
@@ -47,15 +36,13 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         let dateFormatter = DateFormatter()
         let components = calendar.dateComponents([.day], from: date, to: Date())
         
-        // set date string for firestore id
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        dateString = dateFormatter.string(from: date)
-        
         // set navigation bar title
         if calendar.isDateInToday(date) {
             return "Today"
         }
-        if let daysDifference = components.day, daysDifference > 0 && daysDifference <= 7 {
+        if let daysDifference = components.day, daysDifference == 1 {
+            return "Yesterday"
+        } else if let daysDifference = components.day, daysDifference > 1 && daysDifference <= 8 {
             dateFormatter.dateFormat = "EEEE, d MMMM"
             return dateFormatter.string(from: date)
         } else {
@@ -82,6 +69,10 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         
         // Do any additional setup after loading the view.
         
+        // databaseController setup
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        databaseController = appDelegate?.databaseController
+        
         // Configure segmented control
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
         
@@ -101,6 +92,17 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         addMemoryButton.layer.shadowRadius = 3
         addMemoryButton.layer.shadowOpacity = 0.3
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateTitle()
+        databaseController?.addListener(listener: self)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        databaseController?.removeListener(listener: self)
     }
     
     func createLayoutSection() -> NSCollectionLayoutSection {
@@ -129,6 +131,15 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
 
     
     // MARK: UICollectionViewDataSource
+    
+    func onMemoriesChange(change: DatabaseChange, memories: [Memory]) {
+        self.memories = memories
+        self.memoriesCollectionView.reloadData()
+    }
+    
+    func onDaysChange(change: DatabaseChange, days: [Day]) {
+        // Do nothing
+    }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
