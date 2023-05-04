@@ -19,15 +19,18 @@ class MemoryCell: UICollectionViewCell {
         contentView.backgroundColor = .systemCyan.withAlphaComponent(0.3)
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
+        
     }
     
     func configure(memory: Memory) {
-        titleLabel?.text = memory.title
-        descriptionLabel?.text = memory.description
+        titleLabel.text = memory.title
+        descriptionLabel.text = memory.description
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
-        timeLabel?.text = dateFormatter.string(from: memory.date)
+        timeLabel.text = dateFormatter.string(from: memory.date)
     }
+    
+    
     
 }

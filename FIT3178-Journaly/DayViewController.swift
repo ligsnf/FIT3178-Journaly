@@ -88,8 +88,7 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         // Configure collection view
         memoriesCollectionView.delegate = self
         memoriesCollectionView.dataSource = self
-        
-        
+        memoriesCollectionView.setCollectionViewLayout(UICollectionViewCompositionalLayout(section: createLayoutSection()), animated: false)
         
         // Update title and view
         segmentedControlValueChanged()
@@ -103,6 +102,20 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         addMemoryButton.layer.shadowOpacity = 0.3
         
     }
+    
+    func createLayoutSection() -> NSCollectionLayoutSection {
+        let memorySize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let memoryLayout = NSCollectionLayoutItem(layoutSize: memorySize)
+        memoryLayout.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(140))
+        let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [memoryLayout])
+
+        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
+
+        return layoutSection
+    }
+
 
     /*
     // MARK: - Navigation
@@ -129,6 +142,8 @@ class DayViewController: UIViewController, UICollectionViewDelegate, UICollectio
         cell.configure(memory: memories[indexPath.row])
         return cell
     }
+    
+    
     
 
     // MARK: UICollectionViewDelegate
