@@ -10,7 +10,7 @@ import MapKit
 
 private let reuseIdentifier = "memoryCell"
 
-class DayViewController: UIViewController, DatabaseListener, UICollectionViewDelegate, UICollectionViewDataSource {
+class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Properties
     var listenerType = ListenerType.memories
@@ -20,7 +20,7 @@ class DayViewController: UIViewController, DatabaseListener, UICollectionViewDel
     var memories: [Memory] = []
     
     @IBOutlet var segmentedControl: UISegmentedControl!
-    @IBOutlet var memoriesCollectionView: UICollectionView!
+    @IBOutlet var memoriesTableView: UITableView!
     @IBOutlet var memoriesMapView: MKMapView!
     @IBOutlet var addMemoryButton: UIButton!
     
@@ -56,7 +56,7 @@ class DayViewController: UIViewController, DatabaseListener, UICollectionViewDel
     
     @objc func segmentedControlValueChanged() {
         let selectedIndex = segmentedControl.selectedSegmentIndex
-        memoriesCollectionView.isHidden = selectedIndex != 0
+        memoriesTableView.isHidden = selectedIndex != 0
         memoriesMapView.isHidden = selectedIndex == 0
     }
     
@@ -77,9 +77,8 @@ class DayViewController: UIViewController, DatabaseListener, UICollectionViewDel
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
         
         // Configure collection view
-        memoriesCollectionView.delegate = self
-        memoriesCollectionView.dataSource = self
-        memoriesCollectionView.setCollectionViewLayout(UICollectionViewCompositionalLayout(section: createLayoutSection()), animated: false)
+        memoriesTableView.delegate = self
+        memoriesTableView.dataSource = self
         
         // Update title and view
         segmentedControlValueChanged()
@@ -104,19 +103,6 @@ class DayViewController: UIViewController, DatabaseListener, UICollectionViewDel
         super.viewWillDisappear(animated)
         databaseController?.removeListener(listener: self)
     }
-    
-    func createLayoutSection() -> NSCollectionLayoutSection {
-        let memorySize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let memoryLayout = NSCollectionLayoutItem(layoutSize: memorySize)
-        memoryLayout.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(140))
-        let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [memoryLayout])
-
-        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-
-        return layoutSection
-    }
 
 
     /*
@@ -130,62 +116,35 @@ class DayViewController: UIViewController, DatabaseListener, UICollectionViewDel
     */
 
     
-    // MARK: UICollectionViewDataSource
+    // MARK: UITableViewDataSource
     
     func onMemoriesChange(change: DatabaseChange, memories: [Memory]) {
         self.memories = memories
-        self.memoriesCollectionView.reloadData()
+        self.memoriesTableView.reloadData()
     }
     
     func onDaysChange(change: DatabaseChange, days: [Day]) {
         // Do nothing
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return memories.count
     }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MemoryCell
     
-        // Configure the cell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MemoryCell
         cell.configure(memory: memories[indexPath.row])
         return cell
     }
-    
-    
-    
-
-    // MARK: UICollectionViewDelegate
 
     /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Handle the selection of the memory at indexPath.row
     }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
+     */
     
-    }
-    */
+
+    // MARK: UITableViewDelegate
+
 
 }

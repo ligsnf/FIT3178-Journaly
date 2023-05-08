@@ -7,10 +7,11 @@
 
 import UIKit
 
-class MemoryCell: UICollectionViewCell {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var timeLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
+class MemoryCell: UITableViewCell {
+    
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var timeLabel: UILabel!
+    @IBOutlet var contentLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -19,12 +20,17 @@ class MemoryCell: UICollectionViewCell {
         contentView.backgroundColor = .systemCyan.withAlphaComponent(0.3)
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
-        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
     }
     
     func configure(memory: Memory) {
         titleLabel.text = memory.title
-        descriptionLabel.text = memory.content
+        contentLabel.text = memory.content
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
