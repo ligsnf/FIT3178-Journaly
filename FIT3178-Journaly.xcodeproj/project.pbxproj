@@ -19,6 +19,7 @@
 		E83072F12A022DA100C3936C /* MemoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F02A022DA100C3936C /* MemoryCell.swift */; };
 		E83072F32A03374B00C3936C /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F22A03374B00C3936C /* Memory.swift */; };
 		E83072F52A033D9D00C3936C /* Day.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F42A033D9D00C3936C /* Day.swift */; };
+		E83072F72A09C27D00C3936C /* MemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F62A09C27D00C3936C /* MemoryImageCell.swift */; };
 		E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */; };
 		E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */; };
 		E8EE5A5829F64743001C9AA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8EE5A5629F64743001C9AA0 /* Main.storyboard */; };
@@ -44,6 +45,7 @@
 		E83072F02A022DA100C3936C /* MemoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCell.swift; sourceTree = "<group>"; };
 		E83072F22A03374B00C3936C /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		E83072F42A033D9D00C3936C /* Day.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day.swift; sourceTree = "<group>"; };
+		E83072F62A09C27D00C3936C /* MemoryImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryImageCell.swift; sourceTree = "<group>"; };
 		E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIT3178-Journaly.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				E8191B2A29F9000E00C32930 /* DayViewController.swift */,
 				E8191B2829F8FFC500C32930 /* AccountViewController.swift */,
 				E83072F02A022DA100C3936C /* MemoryCell.swift */,
+				E83072F62A09C27D00C3936C /* MemoryImageCell.swift */,
 			);
 			path = "FIT3178-Journaly";
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 				E83072F12A022DA100C3936C /* MemoryCell.swift in Sources */,
 				E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */,
 				E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */,
+				E83072F72A09C27D00C3936C /* MemoryImageCell.swift in Sources */,
 				E8191B2529F8F5B600C32930 /* SignUpViewController.swift in Sources */,
 				E8191B2729F8FF8D00C32930 /* HomeViewController.swift in Sources */,
 				E8191B3329F90E3300C32930 /* MulticastDelegate.swift in Sources */,

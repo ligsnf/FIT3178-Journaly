@@ -23,14 +23,16 @@ class Memory: NSObject, Codable {
     var datetime: Date?
     var type: String?
     var title: String?
-    var content: String?
+    var text: String?   // for text memories
+    var images: [String]? // for image memories - array of image URLs
     
     enum CodingKeys: String, CodingKey {
         case id
         case datetime
         case type
         case title
-        case content
+        case text
+        case images
     }
 }
 

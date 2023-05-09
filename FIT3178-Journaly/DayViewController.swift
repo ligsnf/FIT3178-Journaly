@@ -76,9 +76,12 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         // Configure segmented control
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
         
-        // Configure collection view
+        // Configure table view
         memoriesTableView.delegate = self
         memoriesTableView.dataSource = self
+        memoriesTableView.rowHeight = UITableView.automaticDimension
+        memoriesTableView.estimatedRowHeight = 90
+
         
         // Update title and view
         segmentedControlValueChanged()
