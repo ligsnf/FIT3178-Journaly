@@ -45,5 +45,8 @@ protocol DatabaseProtocol: AnyObject {
     func setDate(_ date: Date)
     func getDate() -> Date
     
+    // memories
+    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory
+    
 }
 

@@ -167,6 +167,33 @@ class FirebaseController: NSObject, DatabaseProtocol {
         listeners.removeDelegate(listener)
     }
     
+    // memories
+    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory {
+        let memory = Memory()
+        memory.title = title
+        memory.type = type.rawValue
+        memory.datetime = Date()
+        
+        switch type {
+        case .text:
+            memory.text = text
+        case .images:
+            memory.images = images
+        default:
+            print("failed to add memory content: invalid memory type")
+        }
+        
+        do {
+            if let memoryRef = try memoriesRef?.addDocument(from: memory) {
+                memory.id = memoryRef.documentID
+            }
+        } catch {
+            print("Failed to serialize memory")
+        }
+        
+        return memory
+    }
+    
     
     // MARK: - Firebase Controller Specific Methods
     func setupDayListener() {
