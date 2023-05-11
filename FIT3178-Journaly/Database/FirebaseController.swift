@@ -16,6 +16,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
     var dayList: [Day]
     var memories: [Memory]
     
+    var daysListenerRegistration: ListenerRegistration?
     var memoriesListenerRegistration: ListenerRegistration?
     
     // firebase references
@@ -125,7 +126,16 @@ class FirebaseController: NSObject, DatabaseProtocol {
     func signOutUser(completion: @escaping (Error?) -> Void) {
         do {
             try authController.signOut()
+            // Remove the previous listener if it exists
+            daysListenerRegistration?.remove()
+            memoriesListenerRegistration?.remove()
+            memories.removeAll() // Clear the memories array
             currentUser = nil
+//            userSnap = nil
+//            userRef = nil
+//            daysRef = nil
+//            memoriesRef = nil
+            print("Successfully signed out")
             completion(nil)
         } catch let error {
             print("Error signing out: \(error.localizedDescription)")
@@ -167,6 +177,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         listeners.removeDelegate(listener)
     }
     
+    
     // memories
     func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory {
         let memory = Memory()
@@ -197,10 +208,13 @@ class FirebaseController: NSObject, DatabaseProtocol {
     
     // MARK: - Firebase Controller Specific Methods
     func setupDayListener() {
+        // Remove the previous listener if it exists
+        daysListenerRegistration?.remove()
+        
         if let userRef = userRef {
             daysRef = userRef.collection("days")
             
-            daysRef?.addSnapshotListener() {
+            daysListenerRegistration = daysRef?.addSnapshotListener() {
                 (querySnapshot, error) in
                 guard let querySnapshot = querySnapshot else {
                     print("Failed to fetch documents with error: \(String(describing: error))")
