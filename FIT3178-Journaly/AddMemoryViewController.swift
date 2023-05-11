@@ -56,6 +56,13 @@ class AddMemoryViewController: UIViewController {
         // Do any additional setup after loading the view.
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
+        
+        // Style text entry
+        textTextView.layer.borderColor = UIColor.systemGray5.cgColor
+        textTextView.layer.borderWidth = 1.0
+        textTextView.layer.cornerRadius = 8.0
+        textTextView.textContainerInset = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
+
     }
     
 
