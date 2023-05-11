@@ -30,6 +30,7 @@ class AccountViewController: UIViewController {
                     }
                     windowScene.windows.first?.rootViewController = loginNavigationController
                 }
+                
                 // Set back to home view controller
                 if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
                     tabBarController.selectedIndex = 0

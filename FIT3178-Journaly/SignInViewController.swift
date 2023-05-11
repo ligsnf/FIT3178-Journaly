@@ -12,7 +12,7 @@ class SignInViewController: UIViewController {
     
     // MARK: - Properties
     weak var databaseController: DatabaseProtocol?
-    var authStateHandle: AuthStateDidChangeListenerHandle?
+    var authHandle: AuthStateDidChangeListenerHandle?
     
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
@@ -65,14 +65,15 @@ class SignInViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] (auth, user) in
-            guard let self = self else { return }
-            
-            if user != nil {
-                // user is signed in, perform segue
-                if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
-                    self.navigationController?.setViewControllers([tabBarController], animated: false)
+        authHandle = Auth.auth().addStateDidChangeListener {
+            (auth, user) in
+            guard user != nil else { return }
+            // user is signed in, perform segue
+            if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                    fatalError("Could not find main window")
                 }
+                windowScene.windows.first?.rootViewController = tabBarController
             }
         }
     }
@@ -80,7 +81,8 @@ class SignInViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // remove listener when view controller is about to disappear
-        Auth.auth().removeStateDidChangeListener(authStateHandle!)
+        guard let authHandle = authHandle else { return }
+        Auth.auth().removeStateDidChangeListener(authHandle)
     }
     
 

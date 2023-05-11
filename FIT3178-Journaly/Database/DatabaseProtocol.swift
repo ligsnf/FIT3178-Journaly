@@ -14,15 +14,15 @@ enum DatabaseChange {
 }
 
 enum ListenerType {
-    case team
-    case heroes
+    case memories
+    case days
     case all
 }
 
 protocol DatabaseListener: AnyObject {
     var listenerType: ListenerType {get set}
-//    func onTeamChange(change: DatabaseChange, teamHeroes: [Superhero])
-//    func onAllHeroesChange(change: DatabaseChange, heroes: [Superhero])
+    func onMemoriesChange(change: DatabaseChange, memories: [Memory])
+    func onDaysChange(change: DatabaseChange, days: [Day])
 }
 
 protocol DatabaseProtocol: AnyObject {
@@ -30,12 +30,23 @@ protocol DatabaseProtocol: AnyObject {
     
     func cleanup()
     
+    // auth
     func signInUser(email: String, password: String, completion: @escaping (AuthDataResult?, Error?) -> Void)
     func signUpUser(email: String, password: String, name: String, completion: @escaping (AuthDataResult?, Error?) -> Void)
     func signOutUser(completion: @escaping (Error?) -> Void)
     
+    // listeners
     func addListener(listener: DatabaseListener)
     func removeListener(listener: DatabaseListener)
+    
+    func setupMemoriesListener()
+    
+    // date
+    func setDate(_ date: Date)
+    func getDate() -> Date
+    
+    // memories
+    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory
     
 }
 
