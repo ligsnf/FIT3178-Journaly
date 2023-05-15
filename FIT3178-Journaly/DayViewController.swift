@@ -60,6 +60,12 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         memoriesMapView.isHidden = selectedIndex == 0
     }
     
+    @objc func backButtonTapped() {
+        if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
+            tabBarController.selectedIndex = 0
+        }
+    }
+    
     // MARK: - View
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +79,19 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
         
+        // Add bar button item
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.setTitle(" Home", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.sizeToFit()
+        // Make the button call a method when it's tapped
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        // Wrap the button in a UIBarButtonItem
+        let barButtonItem = UIBarButtonItem(customView: button)
+        // Set the navigation bar's left bar button item
+        navigationItem.leftBarButtonItem = barButtonItem
+        
         // Configure segmented control
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
         
@@ -81,7 +100,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         memoriesTableView.dataSource = self
         memoriesTableView.rowHeight = UITableView.automaticDimension
         memoriesTableView.estimatedRowHeight = 90
-
+        
         
         // Update title and view
         segmentedControlValueChanged()
