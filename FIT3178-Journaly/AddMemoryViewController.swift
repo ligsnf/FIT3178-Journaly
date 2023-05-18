@@ -34,6 +34,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             clearAllContentInputs()
+            textTextView.isHidden = false
         case 1:
             clearAllContentInputs()
             setupImagesCollectionView()
@@ -77,15 +78,57 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            let type = MemoryType.text
             guard let text = textTextView.text else {
                 return
             }
             if text.isEmpty {
                 displayMessage(title: "Error", message: "Must enter text content.")
             }
-            let _ = databaseController?.addMemory(title: title, type: type, text: text, images: nil)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, text: text, images: nil)
             dismiss(animated: true, completion: nil)
+        case 1:
+            if imageArray.isEmpty {
+                displayMessage(title: "Error", message: "Cannot save until an image has been selected!")
+                return
+            }
+            guard let userID = Auth.auth().currentUser?.uid else {
+                displayMessage(title: "Error", message: "No user logged in!")
+                return
+            }
+            var imageURLs: [String] = []
+            let timestamp = UInt(Date().timeIntervalSince1970)
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpg"
+            // loop - upload each image in array
+            let dispatchGroup = DispatchGroup()
+            for (index, image) in imageArray.enumerated() {
+                guard let data = image.jpegData(compressionQuality: 0.8) else {
+                    print("Error: Image \(index) data could not be compressed")
+                    return
+                }
+                let filename = "\(timestamp)_\(index).jpg"
+                let imageRef = storageReference.child("\(userID)/\(timestamp)_\(index)")
+                
+                dispatchGroup.enter()
+                let uploadTask = imageRef.putData(data, metadata: metadata) { metadata, error in
+                    if let error = error {
+                        print("Error: \(error)")
+                    } else {
+                        imageURLs.append("\(imageRef)")
+                    }
+                    dispatchGroup.leave()
+                }
+
+                // cache in local storage?
+                let pathsList = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                let documentDirectory = pathsList[0]
+                let imageFile = documentDirectory.appendingPathComponent(filename)
+            }
+
+            dispatchGroup.notify(queue: .main) {
+                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, text: nil, images: imageURLs)
+                self.dismiss(animated: true, completion: nil)
+            }
         default:
             displayMessage(title: "Error", message: "Invalid memory type")
         }
