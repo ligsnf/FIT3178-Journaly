@@ -7,6 +7,8 @@
 
 import Firebase
 import FirebaseFirestoreSwift
+import FirebaseStorage
+import UIKit
 
 class FirebaseController: NSObject, DatabaseProtocol {  
     
@@ -29,11 +31,15 @@ class FirebaseController: NSObject, DatabaseProtocol {
     var daysRef: CollectionReference?
     var memoriesRef: CollectionReference?
     
+    var storageReference = Storage.storage()
+    var imageList = [UIImage]()
+    var imagePathList = [String]()
+    
     // MARK: - methods
     
     // constructor
     override init() {
-        FirebaseApp.configure()
+//        FirebaseApp.configure()
         authController = Auth.auth()
         database = Firestore.firestore()
         dayList = [Day]()
@@ -206,6 +212,16 @@ class FirebaseController: NSObject, DatabaseProtocol {
     }
     
     
+    
+    func loadImageData(filename: String) -> UIImage? {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentsDirectory = paths[0]
+        let imageURL = documentsDirectory.appendingPathComponent(filename)
+        let image = UIImage(contentsOfFile: imageURL.path)
+        return image
+    }
+    
+    
     // MARK: - Firebase Controller Specific Methods
     func setupDayListener() {
         // Remove the previous listener if it exists
@@ -292,6 +308,37 @@ class FirebaseController: NSObject, DatabaseProtocol {
             
             if change.type == .added {
                 memories.insert(memory, at: Int(change.newIndex))
+                if memory.memoryType == MemoryType.images {
+                    guard let imageURLs = memory.images else {
+                        return
+                    }
+                    for imageURL in imageURLs {
+                        let imageName = imageURL.components(separatedBy: "/").last!
+                        let filename = ("\(imageName).jpg")
+                        if !self.imagePathList.contains(filename) {
+                            if let image = self.loadImageData(filename: filename) {
+                                self.imageList.append(image)
+                                self.imagePathList.append(filename)
+                            } else {
+                                // Next Step
+                                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                                let documentsDirectory = paths[0]
+                                let fileURL = documentsDirectory.appendingPathComponent(filename)
+                                let downloadTask = storageReference.reference(forURL: imageURL).write(toFile:fileURL)
+                                
+                                downloadTask.observe(.success) { snapshot in
+                                    guard let image = self.loadImageData(filename: filename) else { return }
+                                    self.imageList.append(image)
+                                    self.imagePathList.append(filename)
+                                }
+                                
+                                downloadTask.observe(.failure){ snapshot in
+                                    print("\(String(describing: snapshot.error))")
+                                }
+                            }
+                        }
+                    }
+                }
             } else if change.type == .modified {
                 memories[Int(change.oldIndex)] = memory
             } else if change.type == .removed {

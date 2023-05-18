@@ -6,6 +6,7 @@
 //
 
 import Firebase
+import UIKit
 
 enum DatabaseChange {
     case add
@@ -47,6 +48,7 @@ protocol DatabaseProtocol: AnyObject {
     
     // memories
     func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory
+    func loadImageData(filename: String) -> UIImage?
     
 }
 

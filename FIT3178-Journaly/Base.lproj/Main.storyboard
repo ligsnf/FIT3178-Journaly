@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="2ui-V2-rgI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="2ui-V2-rgI">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -301,7 +302,9 @@
                             <constraint firstItem="2gQ-Yt-TDn" firstAttribute="leading" secondItem="e9z-UG-DE4" secondAttribute="leading" id="uce-Rb-AjD"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Day" id="Jon-jI-Jfb"/>
+                    <navigationItem key="navigationItem" title="Day" id="Jon-jI-Jfb">
+                        <barButtonItem key="leftBarButtonItem" title="Back" image="chevron.left" catalog="system" id="kkW-ej-kfc"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="addMemoryButton" destination="gCk-QL-SYn" id="DWV-hW-GwK"/>
                         <outlet property="memoriesMapView" destination="2gQ-Yt-TDn" id="Alr-53-RRm"/>
@@ -318,11 +321,11 @@
             <objects>
                 <viewController id="lIH-Oj-bRX" customClass="AddMemoryViewController" customModule="FIT3178_Journaly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Sfy-rM-zPq">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="783"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="M5V-dN-VqW">
-                                <rect key="frame" x="50" y="124" width="293" height="45"/>
+                                <rect key="frame" x="50" y="65" width="293" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="45t-FL-GkN"/>
                                 </constraints>
@@ -333,21 +336,24 @@
                                     <segment title="" image="mic.fill" catalog="system"/>
                                     <segment title="" image="video.fill" catalog="system"/>
                                 </segments>
+                                <connections>
+                                    <action selector="memoryTypeChanged:" destination="lIH-Oj-bRX" eventType="valueChanged" id="B72-fu-x9k"/>
+                                </connections>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a5Y-PR-N4y">
-                                <rect key="frame" x="50" y="198" width="293" height="21"/>
+                                <rect key="frame" x="50" y="139" width="293" height="21"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Content" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RfP-f0-eeb">
-                                <rect key="frame" x="50" y="287" width="293" height="21"/>
+                                <rect key="frame" x="50" y="228" width="293" height="21"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U38-5u-pTn">
-                                <rect key="frame" x="50" y="227" width="293" height="40"/>
+                                <rect key="frame" x="50" y="168" width="293" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="XiQ-So-70r"/>
                                 </constraints>
@@ -355,7 +361,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U5G-yk-nyt">
-                                <rect key="frame" x="322" y="69" width="61" height="35"/>
+                                <rect key="frame" x="322" y="10" width="61" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Save"/>
                                 <connections>
@@ -363,7 +369,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n2Y-k6-mVU">
-                                <rect key="frame" x="10" y="69" width="77" height="35"/>
+                                <rect key="frame" x="10" y="10" width="77" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
                                 <connections>
@@ -371,7 +377,7 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="vJ2-bw-9IC">
-                                <rect key="frame" x="50" y="316" width="293" height="160"/>
+                                <rect key="frame" x="50" y="257" width="293" height="160"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="160" id="n6g-t2-qSs"/>
@@ -406,6 +412,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentTitleLabel" destination="RfP-f0-eeb" id="dXu-Sj-DKs"/>
                         <outlet property="segmentedControl" destination="M5V-dN-VqW" id="bB5-sF-D0M"/>
                         <outlet property="textTextView" destination="vJ2-bw-9IC" id="HpF-PX-UaH"/>
                         <outlet property="titleTextField" destination="U38-5u-pTn" id="Dme-EX-1ZB"/>
@@ -778,6 +785,7 @@
     </scenes>
     <resources>
         <image name="calendar" catalog="system" width="128" height="107"/>
+        <image name="chevron.left" catalog="system" width="97" height="128"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="mic.fill" catalog="system" width="110" height="128"/>
         <image name="person.circle" catalog="system" width="128" height="123"/>
