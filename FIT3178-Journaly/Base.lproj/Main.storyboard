@@ -336,6 +336,9 @@
                                     <segment title="" image="mic.fill" catalog="system"/>
                                     <segment title="" image="video.fill" catalog="system"/>
                                 </segments>
+                                <connections>
+                                    <action selector="memoryTypeChanged:" destination="lIH-Oj-bRX" eventType="valueChanged" id="B72-fu-x9k"/>
+                                </connections>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a5Y-PR-N4y">
                                 <rect key="frame" x="50" y="139" width="293" height="21"/>
@@ -409,6 +412,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentTitleLabel" destination="RfP-f0-eeb" id="dXu-Sj-DKs"/>
                         <outlet property="segmentedControl" destination="M5V-dN-VqW" id="bB5-sF-D0M"/>
                         <outlet property="textTextView" destination="vJ2-bw-9IC" id="HpF-PX-UaH"/>
                         <outlet property="titleTextField" destination="U38-5u-pTn" id="Dme-EX-1ZB"/>
