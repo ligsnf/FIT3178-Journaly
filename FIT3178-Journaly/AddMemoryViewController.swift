@@ -8,8 +8,9 @@
 import UIKit
 import Firebase
 import FirebaseStorage
+import GiphyUISDK
 
-class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate {
     
     // MARK: - Properties
     var usersReference = Firestore.firestore().collection("users")
@@ -24,6 +25,20 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     var imageArray: [UIImage] = []
     let imagePickerController = UIImagePickerController()
     var imagesCollectionView: UICollectionView?
+    
+    var selectedGIF: GPHMedia?
+    var selectedGIFView: GPHMediaView?
+    var addGIFButton: UIButton?
+    let deleteGIFButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.tintColor = .white
+//        button.backgroundColor = .red
+        button.layer.cornerRadius = 15
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(button.self, action: #selector(deleteGIFTapped), for: .touchUpInside)
+        return button
+    }()
     
     // MARK: - Methods
     @IBAction func cancelButtonTapped(_ sender: Any) {
@@ -54,6 +69,27 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             }
         case 2:
             clearAllContentInputs()
+            setupGIFControls()
+            if let addGIFButton = addGIFButton, let selectedGIFView = selectedGIFView {
+                view.addSubview(addGIFButton)
+                view.addSubview(selectedGIFView)
+                
+                addGIFButton.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    addGIFButton.topAnchor.constraint(equalTo: contentTitleLabel.bottomAnchor, constant: 28),
+                    addGIFButton.leadingAnchor.constraint(equalTo: contentTitleLabel.leadingAnchor),
+                    addGIFButton.widthAnchor.constraint(equalToConstant: 60),
+                    addGIFButton.heightAnchor.constraint(equalToConstant: 60)
+                ])
+                
+                selectedGIFView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    selectedGIFView.topAnchor.constraint(equalTo: contentTitleLabel.bottomAnchor, constant: 28),
+                    selectedGIFView.leadingAnchor.constraint(equalTo: contentTitleLabel.leadingAnchor),
+                    selectedGIFView.trailingAnchor.constraint(equalTo: contentTitleLabel.trailingAnchor),
+                ])
+            }
+            
         case 3:
             clearAllContentInputs()
         case 4:
@@ -66,6 +102,8 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     func clearAllContentInputs() {
         textTextView.isHidden = true
         imagesCollectionView?.removeFromSuperview()
+        addGIFButton?.removeFromSuperview()
+        selectedGIFView?.removeFromSuperview()
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
@@ -149,6 +187,73 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         imagesCollectionView?.register(AddMemoryImageCell.self, forCellWithReuseIdentifier: "addMemoryImageCell")
 
     }
+    
+    private func setupGIFControls() {
+        let button = UIButton(type: .system)
+        button.tintColor = .gray
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(addGIFTapped), for: .touchUpInside)
+
+        let plusIconImageView = UIImageView(image: UIImage(systemName: "plus"))
+        plusIconImageView.tintColor = .gray
+        plusIconImageView.contentMode = .center
+        plusIconImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        let addLabel = UILabel()
+        addLabel.text = "Add GIF"
+        addLabel.font = UIFont.systemFont(ofSize: 8)
+        addLabel.textAlignment = .center
+        addLabel.textColor = .gray
+        addLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        button.addSubview(plusIconImageView)
+        button.addSubview(addLabel)
+
+        NSLayoutConstraint.activate([
+            plusIconImageView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            plusIconImageView.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: -10),
+            plusIconImageView.widthAnchor.constraint(equalToConstant: 20),
+            plusIconImageView.heightAnchor.constraint(equalToConstant: 20),
+            
+            addLabel.topAnchor.constraint(equalTo: plusIconImageView.bottomAnchor, constant: 4),
+            addLabel.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 2),
+            addLabel.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -2)
+        ])
+
+        addGIFButton = button
+        
+        // Create a GPHMediaView
+        let GIFView = GPHMediaView()
+        GIFView.translatesAutoresizingMaskIntoConstraints = false
+        GIFView.isHidden = true
+        // Add delete button to GPHMediaView
+        GIFView.addSubview(deleteGIFButton)
+        deleteGIFButton.isHidden = true
+        // Set constraints for delete button
+        NSLayoutConstraint.activate([
+            deleteGIFButton.topAnchor.constraint(equalTo: GIFView.topAnchor, constant: 8),
+            deleteGIFButton.trailingAnchor.constraint(equalTo: GIFView.trailingAnchor, constant: -8),
+            deleteGIFButton.widthAnchor.constraint(equalToConstant: 30),
+            deleteGIFButton.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        selectedGIFView = GIFView
+    }
+    
+    @objc func addGIFTapped() {
+        // Handle GIF selection logic here
+        let giphy = GiphyViewController()
+        giphy.delegate = self
+        present(giphy, animated: true, completion: nil)
+    }
+    
+    @objc func deleteGIFTapped() {
+        selectedGIF = nil
+        selectedGIFView?.isHidden = true
+        deleteGIFButton.isHidden = true
+        addGIFButton?.isHidden = false
+    }
 
     @objc func deleteImageButtonTapped(_ sender: UIButton) {
         let point = sender.convert(CGPoint.zero, to: imagesCollectionView)
@@ -158,6 +263,21 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
 
+    
+    // MARK: - Giphy
+    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+        // you user tapped a GIF!
+        selectedGIF = media
+        selectedGIFView?.setMedia(media)
+        selectedGIFView?.isHidden = false
+        deleteGIFButton.isHidden = false
+        addGIFButton?.isHidden = true
+        giphyViewController.dismiss(animated: true, completion: nil)
+    }
+    
+    func didDismiss(controller: GiphyViewController?) {
+        // your user dismissed the controller without selecting a GIF
+    }
     
     
     // MARK: - View
