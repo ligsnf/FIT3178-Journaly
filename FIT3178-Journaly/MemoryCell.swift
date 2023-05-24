@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GiphyUISDK
 
 class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -14,6 +15,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
     @IBOutlet var timeLabel: UILabel!
     @IBOutlet var textContentLabel: UILabel!
     @IBOutlet var imagesCollectionView: UICollectionView!
+    var gifView: GPHMediaView?
     
     var images: [String]?
     
@@ -65,6 +67,19 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
             imagesCollectionView.backgroundColor = .clear
             imagesCollectionView.reloadData()
             imagesCollectionView.isHidden = false
+        case .gif:
+            let gifView = GPHMediaView()
+            guard let gifURL = memory.gif else { return }
+            gifView.loadAsset(at: gifURL)
+            contentView.addSubview(gifView)
+            // Set constraints for gif
+            gifView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                gifView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+                gifView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+                gifView.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor),
+            ])
+            self.gifView = gifView
         default:
             // Handle other memory types here
             break
@@ -76,6 +91,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
         // hide all content views
         textContentLabel.isHidden = true
         imagesCollectionView.isHidden = true
+        gifView?.removeFromSuperview()
     }
     
     // MARK: - UICollectionViewDataSource

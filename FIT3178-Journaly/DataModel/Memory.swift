@@ -13,7 +13,7 @@ enum MemoryType: String {
     case images = "images"
     case video = "video"
     case audio = "audio"
-    case gifs = "gifs"
+    case gif = "gif"
 }
 
 class Memory: NSObject, Codable {
@@ -25,6 +25,7 @@ class Memory: NSObject, Codable {
     var title: String?
     var text: String?   // for text memories
     var images: [String]? // for image memories - array of image URLs
+    var gif: String? // for GIF memories - the URL of the GIF
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -33,6 +34,7 @@ class Memory: NSObject, Codable {
         case title
         case text
         case images
+        case gif
     }
 }
 

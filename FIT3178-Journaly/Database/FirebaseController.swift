@@ -185,7 +185,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
     
     
     // memories
-    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory {
+    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?, gif: String?) -> Memory {
         let memory = Memory()
         memory.title = title
         memory.type = type.rawValue
@@ -196,6 +196,8 @@ class FirebaseController: NSObject, DatabaseProtocol {
             memory.text = text
         case .images:
             memory.images = images
+        case .gif:
+            memory.gif = gif
         default:
             print("failed to add memory content: invalid memory type")
         }

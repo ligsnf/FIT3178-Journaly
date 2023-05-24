@@ -47,7 +47,7 @@ protocol DatabaseProtocol: AnyObject {
     func getDate() -> Date
     
     // memories
-    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?) -> Memory
+    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?, gif: String?) -> Memory
     func loadImageData(filename: String) -> UIImage?
     
 }

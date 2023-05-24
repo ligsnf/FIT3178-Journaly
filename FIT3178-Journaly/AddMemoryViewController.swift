@@ -28,6 +28,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     
     var selectedGIF: GPHMedia?
     var selectedGIFView: GPHMediaView?
+    var selectedGIFURL: String?
     var addGIFButton: UIButton?
     var deleteGIFButton: UIButton?
     
@@ -113,7 +114,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             if text.isEmpty {
                 displayMessage(title: "Error", message: "Must enter text content.")
             }
-            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, text: text, images: nil)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, text: text, images: nil, gif: nil)
             dismiss(animated: true, completion: nil)
         case 1:
             if imageArray.isEmpty {
@@ -155,9 +156,18 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             }
 
             dispatchGroup.notify(queue: .main) {
-                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, text: nil, images: imageURLs)
+                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, text: nil, images: imageURLs, gif: nil)
                 self.dismiss(animated: true, completion: nil)
             }
+        case 2:
+            guard let gifURL = selectedGIFURL else {
+                return
+            }
+            if gifURL.isEmpty {
+                displayMessage(title: "Error", message: "Must select a GIF.")
+            }
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.gif, text: nil, images: nil, gif: gifURL)
+            dismiss(animated: true, completion: nil)
         default:
             displayMessage(title: "Error", message: "Invalid memory type")
         }
@@ -251,6 +261,8 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         let giphy = GiphyViewController()
         giphy.delegate = self
         present(giphy, animated: true, completion: nil)
+        
+
     }
     
     @objc func deleteGIFTapped() {
@@ -273,6 +285,11 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
         // you user tapped a GIF!
         selectedGIF = media
+        guard let gifURL = media.url(rendition: .original, fileType: .webp) else {
+            print("Invalid gif URL")
+            return
+        }
+        selectedGIFURL = gifURL
         selectedGIFView?.setMedia(media)
         selectedGIFView?.isHidden = false
         deleteGIFButton?.isHidden = false
