@@ -21,6 +21,7 @@
 		E83072F52A033D9D00C3936C /* Day.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F42A033D9D00C3936C /* Day.swift */; };
 		E83072F72A09C27D00C3936C /* MemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F62A09C27D00C3936C /* MemoryImageCell.swift */; };
 		E83072FB2A0B93CE00C3936C /* AddMemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */; };
+		E87921E32A1CD7FE00970CD6 /* GiphyUISDK in Frameworks */ = {isa = PBXBuildFile; productRef = E87921E22A1CD7FE00970CD6 /* GiphyUISDK */; };
 		E8A194EA2A15128000D519B5 /* AddMemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */; };
 		E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */; };
 		E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */; };
@@ -65,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E87921E32A1CD7FE00970CD6 /* GiphyUISDK in Frameworks */,
 				E8EE5A6629F64EF1001C9AA0 /* FirebaseAuth in Frameworks */,
 				E8EE5A6C29F64EF1001C9AA0 /* FirebaseStorage in Frameworks */,
 				E8EE5A6829F64EF1001C9AA0 /* FirebaseFirestore in Frameworks */,
@@ -173,6 +175,7 @@
 				E8EE5A6729F64EF1001C9AA0 /* FirebaseFirestore */,
 				E8EE5A6929F64EF1001C9AA0 /* FirebaseFirestoreSwift */,
 				E8EE5A6B29F64EF1001C9AA0 /* FirebaseStorage */,
+				E87921E22A1CD7FE00970CD6 /* GiphyUISDK */,
 			);
 			productName = "FIT3178-Journaly";
 			productReference = E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */;
@@ -204,6 +207,7 @@
 			mainGroup = E8EE5A4429F64743001C9AA0;
 			packageReferences = (
 				E8EE5A6429F64EF1001C9AA0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				E87921E12A1CD7FE00970CD6 /* XCRemoteSwiftPackageReference "giphy-ios-sdk" */,
 			);
 			productRefGroup = E8EE5A4E29F64743001C9AA0 /* Products */;
 			projectDirPath = "";
@@ -467,6 +471,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E87921E12A1CD7FE00970CD6 /* XCRemoteSwiftPackageReference "giphy-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Giphy/giphy-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		E8EE5A6429F64EF1001C9AA0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -478,6 +490,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E87921E22A1CD7FE00970CD6 /* GiphyUISDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E87921E12A1CD7FE00970CD6 /* XCRemoteSwiftPackageReference "giphy-ios-sdk" */;
+			productName = GiphyUISDK;
+		};
 		E8EE5A6529F64EF1001C9AA0 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E8EE5A6429F64EF1001C9AA0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

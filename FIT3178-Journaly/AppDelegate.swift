@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import GiphyUISDK
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // initialise firebase controller
         FirebaseApp.configure()
         databaseController = FirebaseController()
+        
+        // configure GIPHY API key
+        Giphy.configure(apiKey: "YE7737hrCcMfrjZxGXIcnxBMVLe3l1oe")
         
         // initialise navigation controllers
         let storyboard = UIStoryboard(name: "Main", bundle: nil)

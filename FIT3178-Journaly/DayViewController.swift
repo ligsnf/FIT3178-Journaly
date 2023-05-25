@@ -99,7 +99,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         memoriesTableView.delegate = self
         memoriesTableView.dataSource = self
         memoriesTableView.rowHeight = UITableView.automaticDimension
-        memoriesTableView.estimatedRowHeight = 90
+        memoriesTableView.estimatedRowHeight = 120
         
         
         // Update title and view
