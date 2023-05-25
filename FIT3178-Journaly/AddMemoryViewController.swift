@@ -178,8 +178,8 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 60, height: 60)
-        layout.minimumLineSpacing = 8
-        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = 4
+        layout.minimumInteritemSpacing = 0
 
         imagesCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         imagesCollectionView?.backgroundColor = .clear

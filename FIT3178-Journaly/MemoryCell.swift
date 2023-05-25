@@ -14,10 +14,14 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var timeLabel: UILabel!
     @IBOutlet var textContentLabel: UILabel!
-    @IBOutlet var imagesCollectionView: UICollectionView!
+    var imagesCollectionView: UICollectionView!
     var gifView: GPHMediaView?
     
-    var images: [String]?
+    var images: [String]? {
+        didSet {
+            imagesCollectionView?.reloadData()
+        }
+    }
     
     // MARK: - View
     override func awakeFromNib() {
@@ -27,9 +31,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
         contentView.backgroundColor = .systemCyan.withAlphaComponent(0.3)
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
-        
-        imagesCollectionView.delegate = self
-        imagesCollectionView.dataSource = self
+
     }
     
     override func layoutSubviews() {
@@ -42,6 +44,21 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
         var size = super.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: horizontalFittingPriority, verticalFittingPriority: verticalFittingPriority)
         size.height = max(size.height, 90)
         return size
+    }
+    
+    private func setupImagesCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 60, height: 60)
+        layout.minimumLineSpacing = 8
+        layout.minimumInteritemSpacing = 0
+
+        imagesCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        imagesCollectionView?.backgroundColor = .clear
+        imagesCollectionView?.dataSource = self
+        imagesCollectionView?.delegate = self
+        imagesCollectionView?.register(MemoryImageCell.self, forCellWithReuseIdentifier: "memoryImageCell")
+
     }
 
     
@@ -64,9 +81,23 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
             textContentLabel.isHidden = false
         case .images:
             images = memory.images
-            imagesCollectionView.backgroundColor = .clear
-            imagesCollectionView.reloadData()
-            imagesCollectionView.isHidden = false
+            setupImagesCollectionView()
+            if let imagesCollectionView = imagesCollectionView {
+                contentView.addSubview(imagesCollectionView)
+                
+                // Set up constraints
+                imagesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    imagesCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+                    imagesCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+                    imagesCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                    imagesCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                    imagesCollectionView.heightAnchor.constraint(equalToConstant: 90)
+                ])
+                imagesCollectionView.contentInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+                imagesCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+            }
+            imagesCollectionView?.reloadData()
         case .gif:
             let gifView = GPHMediaView()
             guard let gifURL = memory.gif else { return }
@@ -78,6 +109,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
                 gifView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
                 gifView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
                 gifView.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor),
+                gifView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
             ])
             self.gifView = gifView
         default:
@@ -90,7 +122,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
     func hideControls() {
         // hide all content views
         textContentLabel.isHidden = true
-        imagesCollectionView.isHidden = true
+        imagesCollectionView?.removeFromSuperview()
         gifView?.removeFromSuperview()
     }
     
