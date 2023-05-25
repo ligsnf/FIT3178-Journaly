@@ -109,7 +109,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
                 gifView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
                 gifView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
                 gifView.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor),
-                gifView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+                gifView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
             ])
             self.gifView = gifView
         default:
