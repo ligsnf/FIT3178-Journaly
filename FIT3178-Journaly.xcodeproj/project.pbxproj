@@ -22,6 +22,7 @@
 		E83072F72A09C27D00C3936C /* MemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072F62A09C27D00C3936C /* MemoryImageCell.swift */; };
 		E83072FB2A0B93CE00C3936C /* AddMemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */; };
 		E87921E32A1CD7FE00970CD6 /* GiphyUISDK in Frameworks */ = {isa = PBXBuildFile; productRef = E87921E22A1CD7FE00970CD6 /* GiphyUISDK */; };
+		E879CEAD2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E879CEAC2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift */; };
 		E8A194EA2A15128000D519B5 /* AddMemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */; };
 		E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */; };
 		E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EE5A5229F64743001C9AA0 /* SceneDelegate.swift */; };
@@ -50,6 +51,7 @@
 		E83072F42A033D9D00C3936C /* Day.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day.swift; sourceTree = "<group>"; };
 		E83072F62A09C27D00C3936C /* MemoryImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryImageCell.swift; sourceTree = "<group>"; };
 		E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoryViewController.swift; sourceTree = "<group>"; };
+		E879CEAC2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+setupHideKeyboardOnTap.swift"; sourceTree = "<group>"; };
 		E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoryImageCell.swift; sourceTree = "<group>"; };
 		E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIT3178-Journaly.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EE5A5029F64743001C9AA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				E8191B3429F9120400C32930 /* UIViewController+displayMessage.swift */,
+				E879CEAC2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				E8EE5A5129F64743001C9AA0 /* AppDelegate.swift in Sources */,
 				E8EE5A5329F64743001C9AA0 /* SceneDelegate.swift in Sources */,
 				E83072F72A09C27D00C3936C /* MemoryImageCell.swift in Sources */,
+				E879CEAD2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift in Sources */,
 				E83072FB2A0B93CE00C3936C /* AddMemoryViewController.swift in Sources */,
 				E8191B2529F8F5B600C32930 /* SignUpViewController.swift in Sources */,
 				E8191B2729F8FF8D00C32930 /* HomeViewController.swift in Sources */,
@@ -400,6 +404,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M74Z47J9W8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FIT3178-Journaly/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -427,6 +432,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M74Z47J9W8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FIT3178-Journaly/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

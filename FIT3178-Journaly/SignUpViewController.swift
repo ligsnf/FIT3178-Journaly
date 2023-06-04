@@ -69,6 +69,8 @@ class SignUpViewController: UIViewController {
         // databaseController setup
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
+        // dismiss keyboard when tapped anywhere
+        self.setupHideKeyboardOnTap()
         // hide nav bar
         navigationController?.isNavigationBarHidden = true
     }

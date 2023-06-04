@@ -111,6 +111,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
                 gifView.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor),
                 gifView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
             ])
+            gifView.layoutIfNeeded()
             self.gifView = gifView
         default:
             // Handle other memory types here

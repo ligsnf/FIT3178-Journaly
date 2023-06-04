@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import FirebaseStorage
 import GiphyUISDK
+import AVFoundation
 
 class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate {
     
@@ -23,7 +24,6 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     @IBOutlet var contentTitleLabel: UILabel!
     
     var imageArray: [UIImage] = []
-    let imagePickerController = UIImagePickerController()
     var imagesCollectionView: UICollectionView?
     
     var selectedGIF: GPHMedia?
@@ -31,6 +31,8 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     var selectedGIFURL: String?
     var addGIFButton: UIButton?
     var deleteGIFButton: UIButton?
+    
+    
     
     // MARK: - Methods
     @IBAction func cancelButtonTapped(_ sender: Any) {
@@ -107,7 +109,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         }
         
         switch segmentedControl.selectedSegmentIndex {
-        case 0:
+        case 0: // text memory
             guard let text = textTextView.text else {
                 return
             }
@@ -116,7 +118,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             }
             let _ = databaseController?.addMemory(title: title, type: MemoryType.text, text: text, images: nil, gif: nil)
             dismiss(animated: true, completion: nil)
-        case 1:
+        case 1: // images memory
             if imageArray.isEmpty {
                 displayMessage(title: "Error", message: "Cannot save until an image has been selected!")
                 return
@@ -159,7 +161,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
                 let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, text: nil, images: imageURLs, gif: nil)
                 self.dismiss(animated: true, completion: nil)
             }
-        case 2:
+        case 2: // GIF memory
             guard let gifURL = selectedGIFURL else {
                 return
             }
@@ -310,8 +312,6 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
         
-        imagePickerController.delegate = self
-        
         // Style text entry
         textTextView.layer.borderColor = UIColor.systemGray5.cgColor
         textTextView.layer.borderWidth = 1.0
@@ -356,7 +356,28 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     // MARK: - Collection View Delegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == imageArray.count {
-            present(imagePickerController, animated: true, completion: nil)
+            // handle add photo button clicked
+            let controller = UIImagePickerController()
+            controller.allowsEditing = false
+            controller.delegate = self
+            let actionSheet = UIAlertController(title: nil, message: "Select Option", preferredStyle: .actionSheet)
+            let cameraAction = UIAlertAction(title: "Camera", style: .default) { action in
+                controller.sourceType = .camera
+                self.present(controller, animated: true, completion: nil)
+            }
+            let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { action in
+                controller.sourceType = .photoLibrary
+                self.present(controller, animated: true, completion: nil)
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                actionSheet.addAction(cameraAction)
+            }
+            actionSheet.addAction(libraryAction)
+            actionSheet.addAction(cancelAction)
+            
+            self.present(actionSheet, animated: true, completion: nil)
         }
     }
     
