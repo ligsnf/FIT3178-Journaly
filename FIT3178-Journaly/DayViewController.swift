@@ -10,13 +10,12 @@ import MapKit
 
 private let reuseIdentifier = "memoryCell"
 
-class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate, UITableViewDataSource {
+class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate, UITableViewDataSource, MKMapViewDelegate {
     
     // MARK: - Properties
     var listenerType = ListenerType.memories
     weak var databaseController: DatabaseProtocol?
     
-//    var date: Date = Date()
     var memories: [Memory] = []
     
     @IBOutlet var segmentedControl: UISegmentedControl!
@@ -79,6 +78,8 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
         
+        memoriesMapView.delegate = self
+        
         // Add bar button item
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
@@ -126,6 +127,15 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         databaseController?.removeListener(listener: self)
     }
 
+    func onMemoriesChange(change: DatabaseChange, memories: [Memory]) {
+        self.memories = memories
+        self.memoriesTableView.reloadData()
+        self.loadMapAnnotations()
+    }
+    
+    func onDaysChange(change: DatabaseChange, days: [Day]) {
+        // Do nothing
+    }
 
     /*
     // MARK: - Navigation
@@ -136,19 +146,70 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         // Pass the selected object to the new view controller.
     }
     */
+    
+    // MARK: - Map
+    func loadMapAnnotations() -> Void {
+        // clear map annotations
+        memoriesMapView.removeAnnotations(memoriesMapView.annotations)
+        memoriesMapView.removeOverlays(memoriesMapView.overlays) // Also clear all overlays
+        
+        // add annotations from memories
+        var locations: [LocationAnnotation] = []
+        for memory in memories {
+            if let location = memory.location {
+                let annotation = LocationAnnotation(title: memory.title ?? nil, subtitle: memory.text ?? nil, lat: location.latitude, long: location.longitude)
+                locations.append(annotation)
+                memoriesMapView.addAnnotation(annotation)
+            }
+        }
+        
+        // Draw path between locations
+        var coordinates: [CLLocationCoordinate2D] = locations.map { $0.coordinate }
+        let polyline = MKPolyline(coordinates: &coordinates, count: coordinates.count)
+        memoriesMapView.addOverlay(polyline)
+        
+        // if no locations
+        if locations.isEmpty {
+            if segmentedControl.selectedSegmentIndex == 1 {
+                if memories.isEmpty {
+                    displayMessage(title: "No memories", message: "Add some memories to see their locations")
+                } else {
+                    displayMessage(title: "No locations", message: "None of your memories have locations, try turning on location services and add some memories")
+                }
+            }
+        } else {
+            mapShowAllAnnotations()
+        }
+    }
+
+    // MKMapViewDelegate method
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay is MKPolyline {
+            let renderer = MKPolylineRenderer(overlay: overlay)
+            renderer.strokeColor = .blue
+            renderer.lineWidth = 2
+            return renderer
+        }
+        return MKOverlayRenderer(overlay: overlay)
+    }
+
+    
+    func focusMapOn(annotation: MKAnnotation) {
+        memoriesMapView.selectAnnotation(annotation, animated: true)
+        
+        let zoomRegion = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        memoriesMapView.setRegion(zoomRegion, animated: true)
+    }
+    
+    func mapShowAllAnnotations() {
+        memoriesMapView.showAnnotations(memoriesMapView.annotations, animated: true)
+        let mapEdgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        let mapRectToDisplay = memoriesMapView.mapRectThatFits(memoriesMapView.visibleMapRect, edgePadding: mapEdgePadding)
+        memoriesMapView.setVisibleMapRect(mapRectToDisplay, edgePadding: mapEdgePadding, animated: true)
+    }
 
     
     // MARK: UITableViewDataSource
-    
-    func onMemoriesChange(change: DatabaseChange, memories: [Memory]) {
-        self.memories = memories
-        self.memoriesTableView.reloadData()
-    }
-    
-    func onDaysChange(change: DatabaseChange, days: [Day]) {
-        // Do nothing
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return memories.count
     }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 enum MemoryType: String {
@@ -21,6 +22,7 @@ class Memory: NSObject, Codable {
     // properties
     @DocumentID var id: String?
     var datetime: Date?
+    var location: GeoPoint? // for location of the memory
     var type: String?
     var title: String?
     var text: String?   // for text memories
@@ -30,6 +32,7 @@ class Memory: NSObject, Codable {
     enum CodingKeys: String, CodingKey {
         case id
         case datetime
+        case location
         case type
         case title
         case text

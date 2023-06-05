@@ -6,17 +6,22 @@
 //
 
 import UIKit
+import MapKit
 import Firebase
 import FirebaseStorage
 import GiphyUISDK
 import AVFoundation
 
-class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate {
+class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate, CLLocationManagerDelegate {
     
     // MARK: - Properties
     var usersReference = Firestore.firestore().collection("users")
     var storageReference = Storage.storage().reference()
     weak var databaseController: DatabaseProtocol?
+    
+    var locationManager: CLLocationManager = CLLocationManager()
+    var currentLocation: CLLocationCoordinate2D?
+    var locationAuthorized = false
     
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var titleTextField: UITextField!
@@ -107,6 +112,10 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         if title.isEmpty {
             displayMessage(title: "Error", message: "Must enter a title.")
         }
+        var location: GeoPoint?
+        if locationAuthorized, let currentLocation = self.currentLocation {
+            location = GeoPoint(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+        }
         
         switch segmentedControl.selectedSegmentIndex {
         case 0: // text memory
@@ -116,7 +125,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             if text.isEmpty {
                 displayMessage(title: "Error", message: "Must enter text content.")
             }
-            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, text: text, images: nil, gif: nil)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, location: location, text: text, images: nil, gif: nil)
             dismiss(animated: true, completion: nil)
         case 1: // images memory
             if imageArray.isEmpty {
@@ -158,7 +167,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             }
 
             dispatchGroup.notify(queue: .main) {
-                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, text: nil, images: imageURLs, gif: nil)
+                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, location: location, text: nil, images: imageURLs, gif: nil)
                 self.dismiss(animated: true, completion: nil)
             }
         case 2: // GIF memory
@@ -168,7 +177,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             if gifURL.isEmpty {
                 displayMessage(title: "Error", message: "Must select a GIF.")
             }
-            let _ = databaseController?.addMemory(title: title, type: MemoryType.gif, text: nil, images: nil, gif: gifURL)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.gif, location: location, text: nil, images: nil, gif: gifURL)
             dismiss(animated: true, completion: nil)
         default:
             displayMessage(title: "Error", message: "Invalid memory type")
@@ -318,6 +327,18 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         textTextView.layer.cornerRadius = 8.0
         textTextView.textContainerInset = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
 
+        // location setup
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = 10
+        locationManager.delegate = self
+        
+        let authorisationStatus = locationManager.authorizationStatus
+        if authorisationStatus != .authorizedWhenInUse {
+            locationAuthorized = false
+            if authorisationStatus == .notDetermined {
+                locationManager.requestWhenInUseAuthorization()
+            }
+        }
     }
     
     
@@ -395,7 +416,17 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         dismiss(animated: true, completion: nil)
     }
 
-
+    // MARK: - Location
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .authorizedWhenInUse {
+            locationAuthorized = true
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations.last?.coordinate
+    }
 
     /*
     // MARK: - Navigation

@@ -185,11 +185,15 @@ class FirebaseController: NSObject, DatabaseProtocol {
     
     
     // memories
-    func addMemory(title: String, type: MemoryType, text: String?, images: [String]?, gif: String?) -> Memory {
+    func addMemory(title: String, type: MemoryType, location: GeoPoint?, text: String?, images: [String]?, gif: String?) -> Memory {
         let memory = Memory()
         memory.title = title
         memory.type = type.rawValue
         memory.datetime = Date()
+        
+        if let memoryLocation = location {
+            memory.location = memoryLocation
+        }
         
         switch type {
         case .text:
