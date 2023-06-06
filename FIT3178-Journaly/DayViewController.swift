@@ -120,6 +120,16 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         super.viewWillAppear(animated)
         updateTitle()
         databaseController?.addListener(listener: self)
+        
+        // only show add memory button if it is current date
+        let currentDate = Date()
+        if let dateFromDatabase = databaseController?.getDate(), Calendar.current.isDate(dateFromDatabase, inSameDayAs: currentDate) {
+            // Show the button
+            addMemoryButton.isHidden = false
+        } else {
+            // Hide the button
+            addMemoryButton.isHidden = true
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -148,7 +158,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
     */
     
     // MARK: - Map
-    func loadMapAnnotations() -> Void {
+    func loadMapAnnotations() {
         // clear map annotations
         memoriesMapView.removeAnnotations(memoriesMapView.annotations)
         memoriesMapView.removeOverlays(memoriesMapView.overlays) // Also clear all overlays
@@ -157,7 +167,17 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         var locations: [LocationAnnotation] = []
         for memory in memories {
             if let location = memory.location {
-                let annotation = LocationAnnotation(title: memory.title ?? nil, subtitle: memory.text ?? nil, lat: location.latitude, long: location.longitude)
+                var subtitle: String? = nil
+                if let text = memory.text {
+                    // limit number of characters for subtitle
+                    if text.count > 40 {
+                        let index = text.index(text.startIndex, offsetBy: 40)
+                        subtitle = "\(text[..<index])..."
+                    } else {
+                        subtitle = text
+                    }
+                }
+                let annotation = LocationAnnotation(title: memory.title ?? nil, subtitle: subtitle ?? nil, lat: location.latitude, long: location.longitude)
                 locations.append(annotation)
                 memoriesMapView.addAnnotation(annotation)
             }
