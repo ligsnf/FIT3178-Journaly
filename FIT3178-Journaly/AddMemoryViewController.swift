@@ -12,7 +12,7 @@ import FirebaseStorage
 import GiphyUISDK
 import AVFoundation
 
-class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate, CLLocationManagerDelegate {
+class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, GiphyDelegate, CLLocationManagerDelegate, AudioRecorderViewControllerDelegate {
     
     // MARK: - Properties
     var usersReference = Firestore.firestore().collection("users")
@@ -38,6 +38,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     var deleteGIFButton: UIButton?
     
     var addAudioButton: UIButton?
+    var recordedAudioURL: URL?
     
     // MARK: - View
     override func viewDidLoad() {
@@ -406,8 +407,14 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     @objc func addAudioTapped() {
         // Handle Audio selection logic here
         let audioRecorder = AudioRecorderViewController()
-//        audioRecorder.delegate = self
+        audioRecorder.delegate = self
         present(audioRecorder, animated: true, completion: nil)
+    }
+    
+    func didRecordAudio(_ controller: AudioRecorderViewController, didFinishRecording audioURL: URL) {
+        // do something with audioURL, e.g. add it to your data model
+        recordedAudioURL = audioURL
+        addAudioButton?.isHidden = true
     }
     
     

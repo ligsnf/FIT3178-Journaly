@@ -8,9 +8,15 @@
 import UIKit
 import AVFoundation
 
+protocol AudioRecorderViewControllerDelegate: AnyObject {
+    func didRecordAudio(_ controller: AudioRecorderViewController, didFinishRecording audioURL: URL)
+}
+
 class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     
     // MARK: - Properties
+    weak var delegate: AudioRecorderViewControllerDelegate?
+    
     var recordButton: UIButton!
     var playButton: UIButton!
     var finishButton: UIButton!
@@ -26,6 +32,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     var isAudioRecordingGranted: Bool!
     
     var meterTimer: Timer!
+    var playbackTimer: Timer?
     var currentFileUrl: URL!
     
     // MARK: - View
@@ -60,7 +67,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         finishButton.setTitleColor(UIColor.systemBlue, for: .normal)
         finishButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
         finishButton.translatesAutoresizingMaskIntoConstraints = false
-        finishButton.addTarget(self, action: #selector(finishRecording), for: .touchUpInside)
+        finishButton.addTarget(self, action: #selector(finishRecordingButtonTapped), for: .touchUpInside)
         view.addSubview(finishButton)
         
         // Initialize finish button
@@ -143,6 +150,15 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
     
+    @objc func updatePlaybackTime() {
+        if let player = audioPlayer {
+            let currentTime = player.currentTime
+            let minutes = Int(currentTime / 60)
+            let seconds = Int(currentTime) % 60
+            currentTimeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+        }
+    }
+    
     
     func preparePlay() {
         do {
@@ -160,6 +176,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
             audioPlayer.stop()
             recordButton.isEnabled = true
             playButton.setTitle("Play", for: .normal)
+            playbackTimer?.invalidate()  // Stop the timer
             isPlaying = false
         } else {
             guard let currentFileUrl = currentFileUrl else {
@@ -171,6 +188,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
                 playButton.setTitle("Pause", for: .normal)
                 preparePlay()
                 audioPlayer.play()
+                playbackTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updatePlaybackTime), userInfo: nil, repeats: true)
                 isPlaying = true
             } else {
                 displayMessage(title: "Error", message: "Audio file is missing.")
@@ -178,13 +196,24 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
     
-    @objc func finishRecording(success: Bool) {
+    @objc func finishRecordingButtonTapped(_ sender: UIButton) {
+        // Check whether the audio recorder is not nil and if a recording file exists
+        let isSuccessful = audioRecorder != nil && FileManager.default.fileExists(atPath: currentFileUrl?.path ?? "")
+        finishRecording(success: isSuccessful)
+    }
+
+    func finishRecording(success: Bool) {
         if success {
             audioRecorder.stop()
+            guard let audioURL = currentFileUrl else {
+                displayMessage(title: "Error", message: "Must record audio first before playing it.")
+                return
+            }
             audioRecorder = nil
             meterTimer.invalidate()
             print("recorded successfully.")
             finishButton.setTitle("Finish", for: .normal)
+            delegate?.didRecordAudio(self, didFinishRecording: audioURL)
             dismiss(animated: true, completion: nil)
         } else {
             finishButton.setTitle("Try Again", for: .normal)
@@ -221,6 +250,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         playButton.setTitle("Play", for: .normal)
         isPlaying = false
+        playbackTimer?.invalidate()
         recordButton.isEnabled = true
     }
     
