@@ -8,10 +8,15 @@
 import UIKit
 import FirebaseStorage
 
+/// `MemoryImageCell` is a custom `UICollectionViewCell` subclass that handles displaying a single image of a memory.
+///
+/// This class includes an `UIImageView` to display the image and a method to configure the cell with an image URL.
 class MemoryImageCell: UICollectionViewCell {
-    var imageView: UIImageView!
-    weak var databaseController: DatabaseProtocol?
     
+    var imageView: UIImageView! /// An `UIImageView` to display the memory's image.
+    weak var databaseController: DatabaseProtocol? /// A weak reference to an object that conforms to the `DatabaseProtocol` to handle operations like loading image data.
+    
+    /// Overrides the initializer for the `UICollectionViewCell`. This initializer sets up the image view and its constraints.
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -31,11 +36,15 @@ class MemoryImageCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
-        
+    
+    /// An initializer from NSCoder class, which you should not call directly. This method is not supported and raises a runtime error.
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// Configures the cell with the provided image URL.
+    ///
+    /// This method checks if the image exists in local storage. If it does, the image is loaded from there. If not, it downloads the image from Firebase Storage.
     func configure(imageURL: String) {
         let imageName = imageURL.components(separatedBy: "/").last!
         let filename = "\(imageName).jpg"
@@ -47,7 +56,7 @@ class MemoryImageCell: UICollectionViewCell {
             let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             let documentsDirectory = paths[0]
             let fileURL = documentsDirectory.appendingPathComponent(filename)
-
+            
             // Download the image from Firebase Storage if it doesn't exist locally
             let storageRef = Storage.storage().reference(forURL: imageURL)
             storageRef.write(toFile: fileURL) { url, error in
@@ -63,5 +72,5 @@ class MemoryImageCell: UICollectionViewCell {
             }
         }
     }
-
+    
 }

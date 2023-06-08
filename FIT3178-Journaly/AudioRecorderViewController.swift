@@ -3,43 +3,56 @@
 //  FIT3178-Journaly
 //
 //  Created by Liangdi Wang on 6/6/2023.
-//  https://stackoverflow.com/questions/26472747/recording-audio-in-swift
+//
 
 import UIKit
 import AVFoundation
 
 protocol AudioRecorderViewControllerDelegate: AnyObject {
+    /// Delegate method invoked when the audio recording is finished.
+    ///
+    /// - Parameters:
+    ///   - controller: The `AudioRecorderViewController` where the recording occurred.
+    ///   - audioURL: The URL of the recorded audio file.
     func didRecordAudio(_ controller: AudioRecorderViewController, didFinishRecording audioURL: URL)
 }
 
+/// `AudioRecorderViewController` is a custom `UIViewController` subclass that provides an interface for recording audio.
+///
+/// This class includes a record button for controlling the start/stop of the recording, a finish button to finalize the recording, and a cancel button to discard the recording.
+/// It uses the AVAudioRecorderDelegate and AVAudioPlayerDelegate protocols to manage the audio recording and playback.
+///
+/// Reference: [StackOverflow - Recording Audio in Swift](https://stackoverflow.com/questions/26472747/recording-audio-in-swift)
 class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     
     // MARK: - Properties
-    weak var delegate: AudioRecorderViewControllerDelegate?
+    weak var delegate: AudioRecorderViewControllerDelegate? /// Delegate for `AudioRecorderViewControllerDelegate`.
     
-    var recordButton: UIButton!
-    var finishButton: UIButton!
-    var cancelButton: UIButton!
-    var totalTimeLabel: UILabel!
-    var audioPlaybackView: AudioPlaybackView?
+    // UI controls
+    var recordButton: UIButton! /// Button to control the start/stop of the recording.
+    var finishButton: UIButton! /// Button to finalize the recording.
+    var cancelButton: UIButton! /// Button to discard the recording.
+    var totalTimeLabel: UILabel! /// Label to display the total recording time.
+    var audioPlaybackView: AudioPlaybackView? /// Custom view for audio playback.
     
-    var audioRecorder: AVAudioRecorder!
-    var audioPlayer: AVAudioPlayer!
+    var audioRecorder: AVAudioRecorder! /// AVAudioRecorder to manage the audio recording.
+    var audioPlayer: AVAudioPlayer! /// AVAudioPlayer to manage the audio playback.
     
-    var isRecording = false
-    var isPlaying = false
-    var isAudioRecordingGranted: Bool!
+    var isRecording = false /// Boolean to track the recording status.
+    var isAudioRecordingGranted: Bool! /// Boolean to track the audio recording permission status.
     
-    var meterTimer: Timer!
-    var currentFileUrl: URL!
+    var meterTimer: Timer! /// Timer to update the recording time label.
+    var currentFileUrl: URL! /// URL of the current recording file.
     
     // MARK: - View
     override func viewDidLoad() {
         super.viewDidLoad()
+        /// Set up the UI and check for record permission.
         setupUI()
         checkRecordPermission()
     }
     
+    /// Sets up the user interface for the view controller.
     func setupUI() {
         view.backgroundColor = .white
         
@@ -108,6 +121,8 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     }
     
     // MARK: - Methods
+    
+    /// Starts or stops the recording when the record button is tapped.
     @objc func startRecording() {
         if isRecording {
             audioRecorder.stop()
@@ -129,6 +144,9 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
 
+    /// Updates the recording time label.
+        ///
+        /// - Parameter timer: The timer object.
     @objc func updateRecordingTimeLabel(timer: Timer) {
         if let recorder = audioRecorder, recorder.isRecording {
             let min = Int(recorder.currentTime / 60)
@@ -139,12 +157,18 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
     
+    /// Finalizes the recording when the finish button is tapped.
+        ///
+        /// - Parameter sender: The button object that is tapped.
     @objc func finishRecordingButtonTapped(_ sender: UIButton) {
         // Check whether the audio recorder is not nil and if a recording file exists
         let isSuccessful = audioRecorder != nil && FileManager.default.fileExists(atPath: currentFileUrl?.path ?? "")
         finishRecording(success: isSuccessful)
     }
 
+    /// Finishes the recording.
+        ///
+        /// - Parameter success: A boolean value indicating whether the recording was successful or not.
     func finishRecording(success: Bool) {
         if success {
             audioRecorder.stop()
@@ -164,15 +188,18 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
     
+    /// Cancels the recording and dismisses the view controller when the cancel button is tapped.
     @objc func cancelRecording() {
         dismiss(animated: true, completion: nil)
     }
     
+    /// Returns the URL of the documents directory.
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
     
+    /// Returns the URL of the recording file.
     func getFileUrl() -> URL {
         let timestamp = UInt(Date().timeIntervalSince1970)
         let filename = "\(timestamp).m4a"
@@ -190,16 +217,17 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
                 displayMessage(title: "Error", message: "Must record audio first before playing it.")
                 return
             }
+            // pass recorded audio URL to audio player
             audioPlaybackView?.setAudioURL(currentFileUrl)
         }
     }
     
     // AVAudioPlayerDelegate
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        isPlaying = false
         recordButton.isEnabled = true
     }
     
+    /// Checks the record permission status and asks for permission.
     func checkRecordPermission() {
         switch AVAudioSession.sharedInstance().recordPermission {
         case AVAudioSession.RecordPermission.granted:
@@ -222,6 +250,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         }
     }
     
+    /// Sets up the audio recorder.
     func setupRecorder() {
         if isAudioRecordingGranted
         {

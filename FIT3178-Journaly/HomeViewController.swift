@@ -7,10 +7,14 @@
 
 import UIKit
 
+/// `HomeViewController` is the primary screen the users see after they log in to the application.
+///
+/// This view controller provides an interface for the user to navigate through different parts of the application.
+/// The HomeViewController might also display some basic user information and other relevant details depending on your application's specifics.
 class HomeViewController: UIViewController {
     
     // MARK: - Properties
-    weak var databaseController: DatabaseProtocol?
+    weak var databaseController: DatabaseProtocol? // Instance of the database controller for database operations
     
     @IBOutlet var datePicker: UIDatePicker!
     
@@ -34,6 +38,7 @@ class HomeViewController: UIViewController {
         segueToDayView(selectedDate)
     }
     
+    // Function to segue to the DayView with a given date
     func segueToDayView(_ date: Date) {
         if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController,
            let navigationController = tabBarController.viewControllers?[1] as? UINavigationController,
@@ -52,7 +57,7 @@ class HomeViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         
-        // databaseController setup
+        // Set up the database controller from the app delegate
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.databaseController
 

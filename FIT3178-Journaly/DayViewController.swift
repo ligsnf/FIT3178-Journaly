@@ -10,26 +10,33 @@ import MapKit
 
 private let reuseIdentifier = "memoryCell"
 
+/// `DayViewController` is the controller for the Day View in the application.
+/// It shows the memories for a particular day, handles UI interactions,
+/// and communicates with the database controller to perform necessary operations.
 class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate, UITableViewDataSource, MKMapViewDelegate {
     
     // MARK: - Properties
-    var listenerType = ListenerType.memories
-    weak var databaseController: DatabaseProtocol?
+    var listenerType = ListenerType.memories // Type of database listener for this view controller
+    weak var databaseController: DatabaseProtocol? // Instance of the database controller for database operations
     
-    var memories: [Memory] = []
+    var memories: [Memory] = [] // Array to hold memories to be displayed
     
+    // UI elements
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var memoriesTableView: UITableView!
     @IBOutlet var memoriesMapView: MKMapView!
     @IBOutlet var addMemoryButton: UIButton!
     
     // MARK: - Methods
+    
+    /// Updates the title of the navigation bar
     func updateTitle() {
         if let currentDate = databaseController?.getDate() {
             self.navigationItem.title = formatDate(currentDate)
         }
     }
     
+    /// Formats a date object into a string for display
     func formatDate(_ date: Date) -> String {
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
@@ -50,15 +57,18 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         }
     }
     
+    /// Function to handle when the 'add memory' button is tapped
     @IBAction func addMemoryButtonTapped(_ sender: Any) {
     }
     
+    /// Function to handle when the value of the segmented control changes
     @objc func segmentedControlValueChanged() {
         let selectedIndex = segmentedControl.selectedSegmentIndex
         memoriesTableView.isHidden = selectedIndex != 0
         memoriesMapView.isHidden = selectedIndex == 0
     }
     
+    /// Function to handle when the 'back' button is tapped
     @objc func backButtonTapped() {
         if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.tabBarController {
             tabBarController.selectedIndex = 0
@@ -118,6 +128,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Update title and listen for changes in the database
         updateTitle()
         databaseController?.addListener(listener: self)
         
@@ -134,9 +145,11 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Stop listening for changes in the database
         databaseController?.removeListener(listener: self)
     }
 
+    // DatabaseListener methods
     func onMemoriesChange(change: DatabaseChange, memories: [Memory]) {
         self.memories = memories
         self.memoriesTableView.reloadData()
@@ -158,6 +171,8 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
     */
     
     // MARK: - Map
+    
+    /// Loads annotations onto the map view
     func loadMapAnnotations() {
         // clear map annotations
         memoriesMapView.removeAnnotations(memoriesMapView.annotations)
@@ -213,7 +228,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         return MKOverlayRenderer(overlay: overlay)
     }
 
-    
+    /// Focuses the map view on the given annotation
     func focusMapOn(annotation: MKAnnotation) {
         memoriesMapView.selectAnnotation(annotation, animated: true)
         
@@ -221,6 +236,7 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
         memoriesMapView.setRegion(zoomRegion, animated: true)
     }
     
+    /// Fits all annotations into the visible region of the map view
     func mapShowAllAnnotations() {
         memoriesMapView.showAnnotations(memoriesMapView.annotations, animated: true)
         let mapEdgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -231,10 +247,12 @@ class DayViewController: UIViewController, DatabaseListener, UITableViewDelegate
     
     // MARK: UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // Returns the number of memories to be displayed
         return memories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Configures and returns a cell for the memory at indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MemoryCell
         cell.configure(memory: memories[indexPath.row])
         return cell

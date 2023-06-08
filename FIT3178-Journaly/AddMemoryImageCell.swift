@@ -7,8 +7,12 @@
 
 import UIKit
 
+/// `AddMemoryImageCell` is a custom `UICollectionViewCell` subclass that provides an interface for adding new images to a memory.
+///
+/// This class includes an image view for previewing the selected image, a button for removing the selected image, a label for the "Add" text, and an icon for the add action.
 class AddMemoryImageCell: UICollectionViewCell {
     
+    /// An `UIImageView` to display the selected image.
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -17,6 +21,7 @@ class AddMemoryImageCell: UICollectionViewCell {
         return imageView
     }()
     
+    /// A `UIButton` that, when tapped, removes the selected image.
     let deleteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -25,6 +30,7 @@ class AddMemoryImageCell: UICollectionViewCell {
         return button
     }()
     
+    /// A `UILabel` to display the "Add" text in the add image button.
     let addLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -34,6 +40,7 @@ class AddMemoryImageCell: UICollectionViewCell {
         return label
     }()
     
+    /// An `UIImageView` to display the plus icon in the add image button.
     let plusIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate)
@@ -43,16 +50,19 @@ class AddMemoryImageCell: UICollectionViewCell {
         return imageView
     }()
     
+    /// Overrides the initializer for the `UICollectionViewCell`. This initializer sets up the view hierarchy and its constraints.
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
     
+    /// An initializer from NSCoder class. This initializer sets up the view hierarchy and its constraints.
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
     }
     
+    /// Sets up the view hierarchy and constraints of the cell.
     private func setupViews() {
         addSubview(imageView)
         addSubview(deleteButton)

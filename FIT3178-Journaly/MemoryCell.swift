@@ -9,22 +9,30 @@ import UIKit
 import GiphyUISDK
 import FirebaseStorage
 
+/// `MemoryCell` is a custom `UITableViewCell` subclass that handles displaying memory details, including title, time, text content, images, gifs, and audio.
+///
+/// It conforms to `UICollectionViewDelegate`, `UICollectionViewDataSource`, and `UICollectionViewDelegateFlowLayout` for managing a collection of memory images.
 class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // MARK: - Properties
+    
+    /// Memory UI Labels
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var timeLabel: UILabel!
     @IBOutlet var textContentLabel: UILabel!
-    var imagesCollectionView: UICollectionView!
-    var gifView: GPHMediaView?
-    var audioView: AudioPlaybackView?
-    var images: [String]? {
+    
+    var imagesCollectionView: UICollectionView! /// A `UICollectionView` for displaying images of the memory.
+    var gifView: GPHMediaView? /// A `GPHMediaView` for displaying gif of the memory.
+    var audioView: AudioPlaybackView? /// An `AudioPlaybackView` for displaying audio of the memory.
+    var images: [String]? { /// An array of image URLs. When set, the `imagesCollectionView` is reloaded.
         didSet {
             imagesCollectionView?.reloadData()
         }
     }
     
     // MARK: - View
+    
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -35,18 +43,20 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
 
     }
     
+    /// Called to notify the view controller that its view is about to layout its subviews.
     override func layoutSubviews() {
         super.layoutSubviews()
-
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
     }
     
+    /// Returns the optimal size of the view considering the specified constraints.
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
         var size = super.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: horizontalFittingPriority, verticalFittingPriority: verticalFittingPriority)
         size.height = max(size.height, 90)
         return size
     }
     
+    /// Setup UI and layout for images collection view
     private func setupImagesCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -64,6 +74,8 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
 
     
     // MARK: - Methods
+    
+    /// Configures the cell with the provided `Memory` object.
     func configure(memory: Memory) {
         hideControls()
         
@@ -157,6 +169,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
         }
     }
     
+    /// Loads the file data from the given filename.
     func loadFileData(filename: String) -> URL? {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = paths[0]
@@ -169,6 +182,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
         return fileURL
     }
     
+    /// Hides all the controls. Called before configuring each cell to ensure only controls for that cell's memory type are displayed.
     func hideControls() {
         // hide all content views
         textContentLabel.isHidden = true

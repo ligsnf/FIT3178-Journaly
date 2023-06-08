@@ -10,14 +10,16 @@ import FirebaseFirestoreSwift
 import FirebaseStorage
 import UIKit
 
+/// FirebaseController is the class responsible for managing the database functionalities of the application.
 class FirebaseController: NSObject, DatabaseProtocol {  
     
     // MARK: - properties
-    var listeners = MulticastDelegate<DatabaseListener>()
-    var currentDate: Date = Date()
-    var dayList: [Day]
-    var memories: [Memory]
+    var listeners = MulticastDelegate<DatabaseListener>() // listeners for database changes
+    var currentDate: Date = Date() // the current date for day view
+    var dayList: [Day] // a list of Day objects of the current user
+    var memories: [Memory] // a list of Memory objects of the current day
     
+    // listener registrations for days and memories
     var daysListenerRegistration: ListenerRegistration?
     var memoriesListenerRegistration: ListenerRegistration?
     
@@ -31,17 +33,19 @@ class FirebaseController: NSObject, DatabaseProtocol {
     var daysRef: CollectionReference?
     var memoriesRef: CollectionReference?
     
+    // storage reference for Firebase Storage
     var storageReference = Storage.storage()
+    
+    // Lists for images and audios with their respective paths for caching
     var imageList = [UIImage]()
     var imagePathList = [String]()
     var audioList = [URL]()
     var audioPathList = [String]()
     
-    // MARK: - methods
+    // MARK: - Methods
     
     // constructor
     override init() {
-//        FirebaseApp.configure()
         authController = Auth.auth()
         database = Firestore.firestore()
         dayList = [Day]()
@@ -49,21 +53,21 @@ class FirebaseController: NSObject, DatabaseProtocol {
         
         super.init()
         
-        // Check auth
+        // Check authentication state
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] (auth, user) in
             guard let self = self else { return }
             
+            // If a user is signed in, set up a listener for user's days
             if user != nil {
-                // user is signed in
                 self.currentUser = user
                 self.userRef = self.database.collection("users").document(user!.uid)
                 
-                self.setupDayListener() // set up listener for user's days
+                self.setupDayListener()
                 
+                // Get the user document data
                 self.userRef!.getDocument { (document, error) in
                     if let document = document, document.exists {
                         self.userSnap = document
-//                        print("Document data: \(document)")
                     } else {
                         print("Document does not exist")
                     }
@@ -72,22 +76,23 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
+    /// Cleans up the listeners when the controller is about to stop using the database.
     func cleanup() {
         // remove listener when view controller is about to disappear
         Auth.auth().removeStateDidChangeListener(authStateHandle!)
     }
     
-    // set the current date for day view
+    // This function sets the current date for the Day view
     func setDate(_ date: Date) {
         self.currentDate = date
     }
     
-    // get the current date for day view
+    // This function gets the current date for the Day view
     func getDate() -> Date {
         return self.currentDate
     }
     
-    // get current date as formatted string
+    // This function formats a given date to a string
     func formatDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         // set date string for firestore id
@@ -95,7 +100,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         return dateFormatter.string(from: date)
     }
     
-    // authentication
+    // This function handles the process of signing in a user using the provided email and password
     func signInUser(email: String, password: String, completion: @escaping (AuthDataResult?, Error?) -> Void) {
         authController.signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard let _ = self else { return }
@@ -109,6 +114,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
+    // This function handles the process of creating a new user with the provided email, password and name
     func signUpUser(email: String, password: String, name: String, completion: @escaping (AuthDataResult?, Error?) -> Void) {
         authController.createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -131,6 +137,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
+    // This function handles the process of signing out a user and cleaning up the related resources
     func signOutUser(completion: @escaping (Error?) -> Void) {
         do {
             try authController.signOut()
@@ -139,10 +146,6 @@ class FirebaseController: NSObject, DatabaseProtocol {
             memoriesListenerRegistration?.remove()
             memories.removeAll() // Clear the memories array
             currentUser = nil
-//            userSnap = nil
-//            userRef = nil
-//            daysRef = nil
-//            memoriesRef = nil
             print("Successfully signed out")
             completion(nil)
         } catch let error {
@@ -151,7 +154,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
-    // create user in firestore
+    // This function creates a new user document in Firestore for the signed up user
     func addUser(for user: User, name: String, completion: @escaping (Error?) -> Void) {
         let userRef = database.collection("users").document(user.uid)
         userRef.setData([
@@ -167,7 +170,9 @@ class FirebaseController: NSObject, DatabaseProtocol {
     }
     
     
-    // listeners
+    // MARK: Listeners
+    
+    // This function adds a DatabaseListener to the listeners list and triggers the respective listeners
     func addListener(listener: DatabaseListener) {
         listeners.addDelegate(listener)
         
@@ -181,12 +186,13 @@ class FirebaseController: NSObject, DatabaseProtocol {
         
     }
     
+    // This function removes a DatabaseListener from the listeners list
     func removeListener(listener: DatabaseListener) {
         listeners.removeDelegate(listener)
     }
     
     
-    // memories
+    // This function creates a new memory document in Firestore and adds it to the memories array
     func addMemory(title: String, type: MemoryType, location: GeoPoint?, text: String?, images: [String]?, gif: String?, audio: String?) -> Memory {
         let memory = Memory()
         memory.title = title
@@ -222,7 +228,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
     }
     
     
-    
+    // This function loads image data from the device storage given the filename
     func loadImageData(filename: String) -> UIImage? {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = paths[0]
@@ -233,6 +239,8 @@ class FirebaseController: NSObject, DatabaseProtocol {
     
     
     // MARK: - Firebase Controller Specific Methods
+    
+    // This function sets up a Firestore listener for the days collection
     func setupDayListener() {
         // Remove the previous listener if it exists
         daysListenerRegistration?.remove()
@@ -251,7 +259,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
-    
+    // This function sets up a Firestore listener for the memories sub-collection of the current day
     func setupMemoriesListener() {
         // Remove the previous listener if it exists
         memoriesListenerRegistration?.remove()
@@ -269,7 +277,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
-    
+    // This function parses a snapshot of the days collection and updates the local dayList array
     func parseDaysSnapshot(snapshot: QuerySnapshot) {
         snapshot.documentChanges.forEach { (change) in
             var parsedDay: Day?
@@ -301,6 +309,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
         }
     }
     
+    // This function parses a snapshot of the memories sub-collection and updates the local memories array
     func parseMemoriesSnapshot(snapshot: QuerySnapshot) {
         snapshot.documentChanges.forEach { (change) in
             var parsedMemory: Memory?
