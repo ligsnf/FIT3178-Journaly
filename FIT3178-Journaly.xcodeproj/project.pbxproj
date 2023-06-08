@@ -23,6 +23,7 @@
 		E83072FB2A0B93CE00C3936C /* AddMemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */; };
 		E86D7EA62A2DD033006BC555 /* LocationAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D7EA52A2DD033006BC555 /* LocationAnnotation.swift */; };
 		E86D7EA82A2F3872006BC555 /* AudioRecorderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D7EA72A2F3872006BC555 /* AudioRecorderViewController.swift */; };
+		E86D7EAA2A317F73006BC555 /* AudioPlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D7EA92A317F73006BC555 /* AudioPlaybackView.swift */; };
 		E87921E32A1CD7FE00970CD6 /* GiphyUISDK in Frameworks */ = {isa = PBXBuildFile; productRef = E87921E22A1CD7FE00970CD6 /* GiphyUISDK */; };
 		E879CEAD2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E879CEAC2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift */; };
 		E8A194EA2A15128000D519B5 /* AddMemoryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */; };
@@ -55,6 +56,7 @@
 		E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoryViewController.swift; sourceTree = "<group>"; };
 		E86D7EA52A2DD033006BC555 /* LocationAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAnnotation.swift; sourceTree = "<group>"; };
 		E86D7EA72A2F3872006BC555 /* AudioRecorderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderViewController.swift; sourceTree = "<group>"; };
+		E86D7EA92A317F73006BC555 /* AudioPlaybackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaybackView.swift; sourceTree = "<group>"; };
 		E879CEAC2A2C871000526566 /* UIViewController+setupHideKeyboardOnTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+setupHideKeyboardOnTap.swift"; sourceTree = "<group>"; };
 		E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoryImageCell.swift; sourceTree = "<group>"; };
 		E8EE5A4D29F64743001C9AA0 /* FIT3178-Journaly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIT3178-Journaly.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +161,7 @@
 				E83072FA2A0B93CE00C3936C /* AddMemoryViewController.swift */,
 				E8A194E92A15128000D519B5 /* AddMemoryImageCell.swift */,
 				E86D7EA72A2F3872006BC555 /* AudioRecorderViewController.swift */,
+				E86D7EA92A317F73006BC555 /* AudioPlaybackView.swift */,
 			);
 			path = "FIT3178-Journaly";
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				E8191B3329F90E3300C32930 /* MulticastDelegate.swift in Sources */,
 				E8191B2B29F9000E00C32930 /* DayViewController.swift in Sources */,
 				E86D7EA82A2F3872006BC555 /* AudioRecorderViewController.swift in Sources */,
+				E86D7EAA2A317F73006BC555 /* AudioPlaybackView.swift in Sources */,
 				E83072F32A03374B00C3936C /* Memory.swift in Sources */,
 				E8191B3129F90DE900C32930 /* DatabaseProtocol.swift in Sources */,
 			);

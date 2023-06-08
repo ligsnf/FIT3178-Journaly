@@ -39,6 +39,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
     
     var addAudioButton: UIButton?
     var recordedAudioURL: URL?
+    var recordedAudioPlayer: AudioPlaybackView?
     
     // MARK: - View
     override func viewDidLoad() {
@@ -121,7 +122,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         case 3:
             clearAllContentInputs()
             setupAudioControls()
-            if let addAudioButton = addAudioButton {
+            if let addAudioButton = addAudioButton, let recordedAudioPlayer = recordedAudioPlayer {
                 view.addSubview(addAudioButton)
                 
                 addAudioButton.translatesAutoresizingMaskIntoConstraints = false
@@ -130,6 +131,13 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
                     addAudioButton.leadingAnchor.constraint(equalTo: contentTitleLabel.leadingAnchor),
                     addAudioButton.widthAnchor.constraint(equalToConstant: 60),
                     addAudioButton.heightAnchor.constraint(equalToConstant: 60)
+                ])
+                
+                recordedAudioPlayer.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    recordedAudioPlayer.topAnchor.constraint(equalTo: contentTitleLabel.bottomAnchor, constant: 28),
+                    recordedAudioPlayer.leadingAnchor.constraint(equalTo: contentTitleLabel.leadingAnchor),
+                    recordedAudioPlayer.trailingAnchor.constraint(equalTo: contentTitleLabel.trailingAnchor),
                 ])
             }
         case 4:
@@ -402,6 +410,14 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         ])
 
         addAudioButton = button
+        
+        // Create a AudioPlaybackView
+        let audioPlayer = AudioPlaybackView()
+        audioPlayer.translatesAutoresizingMaskIntoConstraints = false
+        audioPlayer.isHidden = true
+        view.addSubview(audioPlayer)
+        
+        recordedAudioPlayer = audioPlayer
     }
     
     @objc func addAudioTapped() {
@@ -415,6 +431,8 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         // do something with audioURL, e.g. add it to your data model
         recordedAudioURL = audioURL
         addAudioButton?.isHidden = true
+        recordedAudioPlayer?.audioURL = audioURL
+        recordedAudioPlayer?.isHidden = false
     }
     
     
