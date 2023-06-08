@@ -132,6 +132,10 @@ class AudioPlaybackView: UIView, AVAudioPlayerDelegate {
         }
     }
     
+    func setAudioURL(_ audio: URL) {
+        audioURL = audio
+    }
+    
     // MARK: - AVAudioPlayerDelegate
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {

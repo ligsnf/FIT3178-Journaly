@@ -34,6 +34,8 @@ class FirebaseController: NSObject, DatabaseProtocol {
     var storageReference = Storage.storage()
     var imageList = [UIImage]()
     var imagePathList = [String]()
+    var audioList = [URL]()
+    var audioPathList = [String]()
     
     // MARK: - methods
     
@@ -185,7 +187,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
     
     
     // memories
-    func addMemory(title: String, type: MemoryType, location: GeoPoint?, text: String?, images: [String]?, gif: String?) -> Memory {
+    func addMemory(title: String, type: MemoryType, location: GeoPoint?, text: String?, images: [String]?, gif: String?, audio: String?) -> Memory {
         let memory = Memory()
         memory.title = title
         memory.type = type.rawValue
@@ -202,6 +204,8 @@ class FirebaseController: NSObject, DatabaseProtocol {
             memory.images = images
         case .gif:
             memory.gif = gif
+        case .audio:
+            memory.audio = audio
         default:
             print("failed to add memory content: invalid memory type")
         }
@@ -314,7 +318,9 @@ class FirebaseController: NSObject, DatabaseProtocol {
             
             if change.type == .added {
                 memories.insert(memory, at: Int(change.newIndex))
-                if memory.memoryType == MemoryType.images {
+                
+                switch memory.memoryType {
+                case .images:
                     guard let imageURLs = memory.images else {
                         return
                     }
@@ -344,6 +350,32 @@ class FirebaseController: NSObject, DatabaseProtocol {
                             }
                         }
                     }
+                case .audio:
+                    guard let audioURL = memory.audio else {
+                            return
+                        }
+                        
+                        let audioName = audioURL.components(separatedBy: "/").last!
+                        let filename = ("\(audioName).m4a")
+                        
+                    if !self.audioPathList.contains(filename) {
+                        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                        let documentsDirectory = paths[0]
+                        let fileURL = documentsDirectory.appendingPathComponent(filename)
+                        
+                        let downloadTask = storageReference.reference(forURL: audioURL).write(toFile: fileURL)
+                        
+                        downloadTask.observe(.success) { snapshot in
+                            self.audioList.append(fileURL)
+                            self.audioPathList.append(filename)
+                        }
+                        
+                        downloadTask.observe(.failure) { snapshot in
+                            print("\(String(describing: snapshot.error))")
+                        }
+                    }
+                default:
+                    break
                 }
             } else if change.type == .modified {
                 memories[Int(change.oldIndex)] = memory
@@ -351,7 +383,7 @@ class FirebaseController: NSObject, DatabaseProtocol {
                 memories.remove(at: Int(change.oldIndex))
             }
         }
-
+        
         listeners.invoke { (listener) in
             if listener.listenerType == ListenerType.memories || listener.listenerType == ListenerType.all {
                 listener.onMemoriesChange(change: .update, memories: memories)

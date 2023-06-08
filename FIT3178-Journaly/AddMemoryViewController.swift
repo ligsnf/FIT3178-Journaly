@@ -172,10 +172,14 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
             guard let text = textTextView.text else {
                 return
             }
+            guard let userID = Auth.auth().currentUser?.uid else {
+                displayMessage(title: "Error", message: "No user logged in!")
+                return
+            }
             if text.isEmpty {
                 displayMessage(title: "Error", message: "Must enter text content.")
             }
-            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, location: location, text: text, images: nil, gif: nil)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.text, location: location, text: text, images: nil, gif: nil, audio: nil)
             dismiss(animated: true, completion: nil)
         case 1: // images memory
             if imageArray.isEmpty {
@@ -209,25 +213,63 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
                     }
                     dispatchGroup.leave()
                 }
-
+                
                 let pathsList = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
                 let documentDirectory = pathsList[0]
                 let imageFile = documentDirectory.appendingPathComponent(filename)
             }
-
+            
             dispatchGroup.notify(queue: .main) {
-                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, location: location, text: nil, images: imageURLs, gif: nil)
+                let _ = self.databaseController?.addMemory(title: title, type: MemoryType.images, location: location, text: nil, images: imageURLs, gif: nil, audio: nil)
                 self.dismiss(animated: true, completion: nil)
             }
         case 2: // GIF memory
             guard let gifURL = selectedGIFURL else {
                 return
             }
+            guard let userID = Auth.auth().currentUser?.uid else {
+                displayMessage(title: "Error", message: "No user logged in!")
+                return
+            }
             if gifURL.isEmpty {
                 displayMessage(title: "Error", message: "Must select a GIF.")
             }
-            let _ = databaseController?.addMemory(title: title, type: MemoryType.gif, location: location, text: nil, images: nil, gif: gifURL)
+            let _ = databaseController?.addMemory(title: title, type: MemoryType.gif, location: location, text: nil, images: nil, gif: gifURL, audio: nil)
             dismiss(animated: true, completion: nil)
+        case 3: // Audio memory
+            guard let recordedAudioURL = recordedAudioURL else {
+                displayMessage(title: "Error", message: "Cannot save until an audio has been recorded!")
+                return
+            }
+            guard let userID = Auth.auth().currentUser?.uid else {
+                displayMessage(title: "Error", message: "No user logged in!")
+                return
+            }
+            
+            let timestamp = UInt(Date().timeIntervalSince1970)
+            let metadata = StorageMetadata()
+            metadata.contentType = "audio/m4a"  // Change the type if the audio file format is different
+            
+            let audioRef = storageReference.child("\(userID)/\(timestamp)")
+            
+            // Upload the audio file
+            let uploadTask = audioRef.putFile(from: recordedAudioURL, metadata: metadata) { metadata, error in
+                if let error = error {
+                    print("Error: \(error)")
+                } else {
+                    // Successfully uploaded, add the memory to the database
+                    let _ = self.databaseController?.addMemory(
+                        title: title,
+                        type: MemoryType.audio,
+                        location: location,
+                        text: nil,
+                        images: nil,
+                        gif: nil,
+                        audio: "\(audioRef)"
+                    )
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
         default:
             displayMessage(title: "Error", message: "Invalid memory type")
         }
@@ -431,7 +473,7 @@ class AddMemoryViewController: UIViewController, UICollectionViewDelegate, UICol
         // do something with audioURL, e.g. add it to your data model
         recordedAudioURL = audioURL
         addAudioButton?.isHidden = true
-        recordedAudioPlayer?.audioURL = audioURL
+        recordedAudioPlayer?.setAudioURL(audioURL)
         recordedAudioPlayer?.isHidden = false
     }
     

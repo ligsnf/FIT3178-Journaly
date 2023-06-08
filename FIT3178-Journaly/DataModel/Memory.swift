@@ -28,6 +28,7 @@ class Memory: NSObject, Codable {
     var text: String?   // for text memories
     var images: [String]? // for image memories - array of image URLs
     var gif: String? // for GIF memories - the URL of the GIF
+    var audio : String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -38,6 +39,7 @@ class Memory: NSObject, Codable {
         case text
         case images
         case gif
+        case audio
     }
 }
 

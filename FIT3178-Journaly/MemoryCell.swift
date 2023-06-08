@@ -7,6 +7,7 @@
 
 import UIKit
 import GiphyUISDK
+import FirebaseStorage
 
 class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -16,7 +17,7 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
     @IBOutlet var textContentLabel: UILabel!
     var imagesCollectionView: UICollectionView!
     var gifView: GPHMediaView?
-    
+    var audioView: AudioPlaybackView?
     var images: [String]? {
         didSet {
             imagesCollectionView?.reloadData()
@@ -113,18 +114,67 @@ class MemoryCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDat
             ])
             gifView.layoutIfNeeded()
             self.gifView = gifView
+        case .audio:
+            let audioPlayer = AudioPlaybackView()
+            guard let audioString = memory.audio else { return }
+            
+            let audioName = audioString.components(separatedBy: "/").last!
+            let filename = ("\(audioName).m4a")
+            
+            if let cachedAudioURL = self.loadFileData(filename: filename) {
+                // Use the local file URL to set the audioURL of the AudioPlaybackView
+                audioPlayer.setAudioURL(cachedAudioURL)
+            } else {
+                // If the audio file is not found in local storage, download it from Firebase Storage
+                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                let documentsDirectory = paths[0]
+                let localURL = documentsDirectory.appendingPathComponent(filename)
+                
+                let storageRef = Storage.storage().reference(forURL: audioString)
+                storageRef.write(toFile: localURL) { url, error in
+                    if let error = error {
+                        print("Error downloading audio: \(error)")
+                    } else {
+                        DispatchQueue.main.async {
+                            audioPlayer.setAudioURL(localURL)
+                        }
+                    }
+                }
+            }
+            contentView.addSubview(audioPlayer)
+            
+            audioPlayer.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                audioPlayer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+                audioPlayer.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+                audioPlayer.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor),
+                audioPlayer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            ])
+            self.audioView = audioPlayer
         default:
             // Handle other memory types here
             break
         }
     }
     
+    func loadFileData(filename: String) -> URL? {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentsDirectory = paths[0]
+        let fileURL = documentsDirectory.appendingPathComponent(filename)
+        
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            return nil
+        }
+        
+        return fileURL
+    }
     
     func hideControls() {
         // hide all content views
         textContentLabel.isHidden = true
         imagesCollectionView?.removeFromSuperview()
         gifView?.removeFromSuperview()
+        audioView?.removeFromSuperview()
     }
     
     // MARK: - UICollectionViewDataSource
