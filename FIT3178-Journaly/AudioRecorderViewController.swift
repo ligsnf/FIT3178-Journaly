@@ -18,11 +18,10 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     weak var delegate: AudioRecorderViewControllerDelegate?
     
     var recordButton: UIButton!
-    var playButton: UIButton!
     var finishButton: UIButton!
     var cancelButton: UIButton!
-    var currentTimeLabel: UILabel!
     var totalTimeLabel: UILabel!
+    var audioPlaybackView: AudioPlaybackView?
     
     var audioRecorder: AVAudioRecorder!
     var audioPlayer: AVAudioPlayer!
@@ -32,7 +31,6 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     var isAudioRecordingGranted: Bool!
     
     var meterTimer: Timer!
-    var playbackTimer: Timer?
     var currentFileUrl: URL!
     
     // MARK: - View
@@ -49,17 +47,10 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         recordButton = UIButton()
         recordButton.setTitle("Record", for: .normal)
         recordButton.backgroundColor = UIColor.red
+        recordButton.layer.cornerRadius = 10
         recordButton.translatesAutoresizingMaskIntoConstraints = false
         recordButton.addTarget(self, action: #selector(startRecording), for: .touchUpInside)
         view.addSubview(recordButton)
-        
-        // Initialize play button
-        playButton = UIButton()
-        playButton.setTitle("Play", for: .normal)
-        playButton.backgroundColor = UIColor.green
-        playButton.translatesAutoresizingMaskIntoConstraints = false
-        playButton.addTarget(self, action: #selector(playRecording), for: .touchUpInside)
-        view.addSubview(playButton)
         
         // Initialize finish button
         finishButton = UIButton()
@@ -70,7 +61,7 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         finishButton.addTarget(self, action: #selector(finishRecordingButtonTapped), for: .touchUpInside)
         view.addSubview(finishButton)
         
-        // Initialize finish button
+        // Initialize cancel button
         cancelButton = UIButton()
         cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.setTitleColor(UIColor.systemBlue, for: .normal)
@@ -79,18 +70,18 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
         cancelButton.addTarget(self, action: #selector(cancelRecording), for: .touchUpInside)
         view.addSubview(cancelButton)
         
-        // Initialize current time label
-        currentTimeLabel = UILabel()
-        currentTimeLabel.text = "00:00"
-        currentTimeLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(currentTimeLabel)
-        
         // Initialize total time label
         totalTimeLabel = UILabel()
         totalTimeLabel.text = "00:00"
         totalTimeLabel.textAlignment = .right
         totalTimeLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(totalTimeLabel)
+        
+        // Initialize current audioPlayer
+        let audioPlaybackView = AudioPlaybackView()
+        audioPlaybackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(audioPlaybackView)
+        
         
         // Add constraints
         NSLayoutConstraint.activate([
@@ -100,22 +91,20 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             
-            currentTimeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            currentTimeLabel.topAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: 20),
-            
-            totalTimeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            totalTimeLabel.topAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: 20),
+            audioPlaybackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            audioPlaybackView.topAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: 20),
+            audioPlaybackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
             recordButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            recordButton.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: 20),
+            recordButton.topAnchor.constraint(equalTo: audioPlaybackView.bottomAnchor, constant: 20),
             recordButton.widthAnchor.constraint(equalToConstant: 100),
-            recordButton.heightAnchor.constraint(equalToConstant: 50),
+            recordButton.heightAnchor.constraint(equalToConstant: 44),
             
-            playButton.leadingAnchor.constraint(equalTo: recordButton.trailingAnchor, constant: 20),
-            playButton.centerYAnchor.constraint(equalTo: recordButton.centerYAnchor),
-            playButton.widthAnchor.constraint(equalToConstant: 100),
-            playButton.heightAnchor.constraint(equalToConstant: 50),
+            totalTimeLabel.leadingAnchor.constraint(equalTo: recordButton.trailingAnchor, constant: 20),
+            totalTimeLabel.centerYAnchor.constraint(equalTo: recordButton.centerYAnchor),
+            
         ])
+        self.audioPlaybackView = audioPlaybackView
     }
     
     // MARK: - Methods
@@ -139,60 +128,14 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
             isRecording = true
         }
     }
-    
+
     @objc func updateRecordingTimeLabel(timer: Timer) {
-        if audioRecorder.isRecording {
-            let min = Int(audioRecorder.currentTime / 60)
-            let sec = Int(audioRecorder.currentTime.truncatingRemainder(dividingBy: 60))
+        if let recorder = audioRecorder, recorder.isRecording {
+            let min = Int(recorder.currentTime / 60)
+            let sec = Int(recorder.currentTime.truncatingRemainder(dividingBy: 60))
             let totalTimeString = String(format: "%02d:%02d", min, sec)
             totalTimeLabel.text = totalTimeString
-            audioRecorder.updateMeters()
-        }
-    }
-    
-    @objc func updatePlaybackTime() {
-        if let player = audioPlayer {
-            let currentTime = player.currentTime
-            let minutes = Int(currentTime / 60)
-            let seconds = Int(currentTime) % 60
-            currentTimeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-        }
-    }
-    
-    
-    func preparePlay() {
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: currentFileUrl)
-            audioPlayer.delegate = self
-            audioPlayer.prepareToPlay()
-        }
-        catch {
-            print("Error: \(error.localizedDescription)")
-        }
-    }
-    
-    @objc func playRecording() {
-        if(isPlaying) {
-            audioPlayer.stop()
-            recordButton.isEnabled = true
-            playButton.setTitle("Play", for: .normal)
-            playbackTimer?.invalidate()  // Stop the timer
-            isPlaying = false
-        } else {
-            guard let currentFileUrl = currentFileUrl else {
-                displayMessage(title: "Error", message: "Must record audio first before playing it.")
-                return
-            }
-            if !isRecording && FileManager.default.fileExists(atPath: currentFileUrl.path) {
-                recordButton.isEnabled = false
-                playButton.setTitle("Pause", for: .normal)
-                preparePlay()
-                audioPlayer.play()
-                playbackTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updatePlaybackTime), userInfo: nil, repeats: true)
-                isPlaying = true
-            } else {
-                displayMessage(title: "Error", message: "Audio file is missing.")
-            }
+            recorder.updateMeters()
         }
     }
     
@@ -242,15 +185,18 @@ class AudioRecorderViewController: UIViewController, AVAudioRecorderDelegate, AV
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if !flag {
             finishRecording(success: false)
+        } else {
+            guard let currentFileUrl = currentFileUrl else {
+                displayMessage(title: "Error", message: "Must record audio first before playing it.")
+                return
+            }
+            audioPlaybackView?.setAudioURL(currentFileUrl)
         }
-        playButton.isEnabled = true
     }
     
     // AVAudioPlayerDelegate
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        playButton.setTitle("Play", for: .normal)
         isPlaying = false
-        playbackTimer?.invalidate()
         recordButton.isEnabled = true
     }
     
